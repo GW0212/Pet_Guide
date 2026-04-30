@@ -12,6 +12,7 @@
   let openedBreedKey = '';
   let isComposing = false;
   const quizState = { dog: null, cat: null };
+  const expandedBreedGroups = { dog: new Set(), cat: new Set() };
 
   const app = $('#app');
 
@@ -51,6 +52,22 @@
     const header = $('header');
     const sectionNav = $('.section-nav');
     return (header ? header.offsetHeight : 0) + (sectionNav ? sectionNav.offsetHeight : 0) + 14;
+  }
+
+  function isMobileLayout() {
+    return window.matchMedia && window.matchMedia('(max-width: 560px)').matches;
+  }
+
+  function scrollToElementTop(element, behavior = 'smooth', extraMargin = 10) {
+    if (!element) return;
+    window.requestAnimationFrame(() => {
+      const targetTop = element.getBoundingClientRect().top + window.pageYOffset - getStickyOffset() - extraMargin;
+      window.scrollTo({ top: Math.max(0, targetTop), behavior });
+    });
+  }
+
+  function scrollToQuizToolbar(behavior = 'smooth') {
+    scrollToElementTop(document.getElementById('quizToolbar'), behavior, 10);
   }
 
   function scrollToContentTop(behavior = 'smooth') {
@@ -105,7 +122,7 @@
         }
       });
       if (breeds.length) {
-        result.push({ name: group.name, desc: group.desc, breeds });
+        result.push({ name: group.name, desc: group.desc, groupIndex, breeds });
       }
     });
     return result;
@@ -149,7 +166,12 @@
     }
 
     return groups.map((group) => {
+      const groupKey = currentPet + '-group-' + group.groupIndex;
       const opened = group.breeds.find((item) => item.key === openedBreedKey);
+      const forceOpen = Boolean(breedQuery) || Boolean(opened) || !isMobileLayout();
+      const expanded = forceOpen || expandedBreedGroups[currentPet].has(groupKey);
+      const cardClass = expanded ? ' is-open' : ' is-collapsed';
+      const toggleText = expanded ? '접기' : '펼치기';
       const chips = group.breeds.map((item) => {
         const active = openedBreedKey === item.key ? ' active' : '';
         return '<button class="chip' + active + '" type="button" data-breed-key="' + escapeHTML(item.key) + '" aria-expanded="' + (openedBreedKey === item.key ? 'true' : 'false') + '">' + escapeHTML(getBreedName(item.breed)) + '</button>';
@@ -158,11 +180,16 @@
       if (opened) opened.groupName = group.name;
 
       return '' +
-        '<section class="breed-list-card">' +
-          '<h3>' + escapeHTML(group.name) + '</h3>' +
-          '<p>' + escapeHTML(group.desc) + '</p>' +
-          '<div class="chips">' + chips + '</div>' +
-          (opened ? breedDetailCard(opened) : '') +
+        '<section class="breed-list-card' + cardClass + '" data-breed-group-key="' + escapeHTML(groupKey) + '">' +
+          '<div class="breed-group-head">' +
+            '<h3>' + escapeHTML(group.name) + '</h3>' +
+            '<button class="breed-group-toggle" type="button" data-breed-group-toggle="' + escapeHTML(groupKey) + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' + toggleText + '</button>' +
+          '</div>' +
+          '<p class="breed-group-desc">' + escapeHTML(group.desc) + '</p>' +
+          '<div class="breed-group-body">' +
+            '<div class="chips">' + chips + '</div>' +
+            (opened ? breedDetailCard(opened) : '') +
+          '</div>' +
         '</section>';
     }).join('');
   }
@@ -277,7 +304,7 @@
     };
     if (shouldRender) {
       renderQuiz();
-      scrollToContentTop('smooth');
+      scrollToQuizToolbar('smooth');
     }
   }
 
@@ -382,7 +409,7 @@
 
     app.innerHTML = '' +
       sectionHeader('🧠', petLabel + ' 관련 지식 테스트', petLabel + '를 키우기 전 꼭 알아야 할 핵심 지식을 점검합니다', '총 100문제 중 랜덤 20문제가 출제됩니다. 새로고침하거나 문제 초기화 버튼을 누르면 다시 랜덤으로 뽑힙니다.') +
-      '<div class="quiz-toolbar step-toolbar">' +
+      '<div class="quiz-toolbar step-toolbar" id="quizToolbar">' +
         '<div><strong>랜덤 20문제</strong><span>한 문제씩 풀고, 이전/다음 버튼으로 답안을 다시 확인할 수 있습니다.</span></div>' +
         '<button class="reset-quiz" type="button" data-reset-quiz="true">문제 초기화</button>' +
       '</div>' +
@@ -601,6 +628,8 @@
     currentTab = 'breeds';
     breedQuery = '';
     openedBreedKey = '';
+    expandedBreedGroups.dog.clear();
+    expandedBreedGroups.cat.clear();
     document.body.className = 'dog-mode';
     renderHero();
     render();
@@ -613,6 +642,7 @@
     currentTab = 'breeds';
     breedQuery = '';
     openedBreedKey = '';
+    if (expandedBreedGroups[pet]) expandedBreedGroups[pet].clear();
     document.body.className = pet + '-mode';
     renderHero();
     render();
@@ -634,8 +664,8 @@
   }
 
   function bindEvents() {
-    window.addEventListener('resize', updateStickyMetrics);
-    window.addEventListener('orientationchange', updateStickyMetrics);
+    window.addEventListener('resize', () => { updateStickyMetrics(); if (currentTab === 'breeds') updateBreedList(); });
+    window.addEventListener('orientationchange', () => { updateStickyMetrics(); if (currentTab === 'breeds') updateBreedList(); });
     window.addEventListener('scroll', updateStickyMetrics, { passive: true });
     const homeLogo = $('#homeLogo');
     if (homeLogo) homeLogo.addEventListener('click', resetHome);
@@ -668,7 +698,7 @@
         session.currentIndex = Math.max(0, (session.currentIndex || 0) - 1);
         session.message = '';
         renderQuiz();
-        scrollToContentTop('smooth');
+        scrollToQuizToolbar('smooth');
         return;
       }
 
@@ -678,7 +708,7 @@
         session.currentIndex = Math.min(session.items.length - 1, (session.currentIndex || 0) + 1);
         session.message = '';
         renderQuiz();
-        scrollToContentTop('smooth');
+        scrollToQuizToolbar('smooth');
         return;
       }
 
@@ -690,7 +720,7 @@
           session.currentIndex = unanswered;
           session.message = '아직 풀지 않은 문제가 있습니다. Q' + (unanswered + 1) + '번을 확인해 주세요.';
           renderQuiz();
-          scrollToContentTop('smooth');
+          scrollToQuizToolbar('smooth');
           return;
         }
         session.submitted = true;
@@ -710,6 +740,20 @@
         return;
       }
 
+      const groupToggle = event.target.closest('[data-breed-group-toggle]');
+      if (groupToggle) {
+        const groupKey = groupToggle.dataset.breedGroupToggle;
+        const store = expandedBreedGroups[currentPet];
+        const isOpen = groupToggle.getAttribute('aria-expanded') === 'true';
+        if (isOpen) store.delete(groupKey);
+        else store.add(groupKey);
+        if (isOpen) openedBreedKey = '';
+        updateBreedList();
+        const targetGroup = document.querySelector('[data-breed-group-key="' + groupKey + '"]');
+        scrollToElementTop(targetGroup, 'smooth', 8);
+        return;
+      }
+
       const closeBtn = event.target.closest('[data-close-breed]');
       if (closeBtn) {
         openedBreedKey = '';
@@ -723,10 +767,8 @@
         openedBreedKey = openedBreedKey === key ? '' : key;
         updateBreedList();
         if (openedBreedKey) {
-          window.requestAnimationFrame(() => {
-            const card = document.getElementById('breedDetail-' + openedBreedKey);
-            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          });
+          const card = document.getElementById('breedDetail-' + openedBreedKey);
+          scrollToElementTop(card, 'smooth', 8);
         }
       }
     });
