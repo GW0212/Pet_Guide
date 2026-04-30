@@ -766,11 +766,191 @@
       .back-to-top { width:42px; height:42px; right:14px; bottom:max(14px, env(safe-area-inset-bottom)); }
     }
 
+
+    /* ─── FINAL QA PATCH: PC 품종 그룹 접힘/펼침, 드래그 방지, 박스 간격/가독성 보정 ─── */
+    img,
+    .logo img,
+    .hero-emoji,
+    .hero-badge,
+    .section-icon,
+    .feature-emoji,
+    .card-icon,
+    .back-to-top {
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-user-drag:none;
+      -webkit-touch-callout:none;
+    }
+    .logo img { pointer-events:none; }
+    .hero-emoji,
+    .hero-badge,
+    .section-icon,
+    .feature-emoji,
+    .card-icon {
+      cursor:default;
+    }
+
+    .breed-group-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:10px;
+    }
+    .breed-list-card h3 {
+      flex:1 1 auto;
+      min-width:0;
+      margin:0;
+      text-align:left;
+      line-height:1.35;
+    }
+    .breed-group-toggle {
+      display:inline-flex !important;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--section-deep);
+      border-radius:999px;
+      padding:8px 14px;
+      font-weight:900;
+      font-size:.82rem;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.045);
+    }
+    .breed-group-toggle:hover,
+    .breed-group-toggle:focus-visible {
+      transform:translateY(-1px);
+      border-color:var(--section-primary);
+      outline:none;
+    }
+    .breed-list-card.is-collapsed .breed-group-desc,
+    .breed-list-card.is-collapsed .breed-group-body {
+      display:none !important;
+    }
+    .breed-list-card.is-collapsed {
+      padding-bottom:18px;
+    }
+    .breed-detail-card {
+      scroll-margin-top:calc(var(--header-height, 106px) + var(--section-nav-height, 64px) + 18px);
+    }
+
+    .feature-grid,
+    .info-grid,
+    .checklist-grid,
+    .breed-list,
+    .quiz-step-shell,
+    .wrong-note {
+      margin-bottom:28px;
+    }
+    .notice,
+    .source-box,
+    .loading-card {
+      clear:both;
+      margin-top:24px;
+      margin-bottom:28px;
+    }
+    .info-grid + .notice,
+    .checklist-grid + .notice,
+    .quiz-step-shell + .notice,
+    .wrong-note + .notice,
+    .breed-list + .notice,
+    .feature-grid + .breed-tools,
+    .quiz-toolbar + .quiz-step-shell {
+      margin-top:28px;
+    }
+    .info-card,
+    .feature-card,
+    .breed-list-card,
+    .breed-detail-card,
+    .check-card,
+    .notice,
+    .source-box,
+    .quiz-toolbar,
+    .quiz-step-shell,
+    .wrong-note,
+    .quiz-result {
+      overflow:visible;
+    }
+    .lead,
+    .notice,
+    .source-box,
+    .list-item span.txt,
+    .breed-fact span,
+    .feature-card p,
+    .check-card p,
+    .quiz-toolbar span,
+    .wrong-card p,
+    footer {
+      word-break:keep-all;
+      overflow-wrap:break-word;
+      text-wrap:pretty;
+      line-height:1.72;
+    }
+    .list-item,
+    .breed-fact,
+    .check-row,
+    .quiz-option {
+      min-width:0;
+    }
+
+    @media (min-width:561px) {
+      .chips { justify-content:flex-start; }
+      .breed-group-desc {
+        text-align:left;
+        margin:2px 0 18px;
+      }
+      .breed-list-card h3 { font-size:1.18rem; }
+    }
+
+    @media (max-width:560px) {
+      .notice,
+      .source-box,
+      .loading-card {
+        margin-top:18px;
+        margin-bottom:22px;
+      }
+      .feature-grid,
+      .info-grid,
+      .checklist-grid,
+      .breed-list,
+      .quiz-step-shell,
+      .wrong-note {
+        margin-bottom:22px;
+      }
+      .info-grid + .notice,
+      .checklist-grid + .notice,
+      .quiz-step-shell + .notice,
+      .wrong-note + .notice,
+      .breed-list + .notice,
+      .feature-grid + .breed-tools,
+      .quiz-toolbar + .quiz-step-shell {
+        margin-top:22px;
+      }
+      .breed-group-toggle {
+        padding:7px 11px;
+        font-size:.76rem;
+      }
+      .lead,
+      .notice,
+      .source-box,
+      .list-item span.txt,
+      .breed-fact span,
+      .feature-card p,
+      .check-card p,
+      .quiz-toolbar span,
+      .wrong-card p,
+      footer {
+        line-height:1.62;
+      }
+    }
+
   </style>
 </head>
 <body class="dog-mode">
   <header>
-    <button class="logo logo-home" id="homeLogo" type="button" aria-label="펫 가이드 첫 화면으로 이동"><img src="favicon.png" alt="펫 가이드 아이콘" /><span>펫 가이드</span></button>
+    <button class="logo logo-home" id="homeLogo" type="button" aria-label="펫 가이드 첫 화면으로 이동"><img src="favicon.png" alt="펫 가이드 아이콘" draggable="false" /><span>펫 가이드</span></button>
     <nav aria-label="반려동물 선택">
       <button class="nav-btn active" type="button" data-pet="dog">🐶 강아지</button>
       <button class="nav-btn" type="button" data-pet="cat">🐱 고양이</button>

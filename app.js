@@ -61,20 +61,34 @@
   function scrollToElementTop(element, behavior = 'smooth', extraMargin = 10) {
     if (!element) return;
     window.requestAnimationFrame(() => {
-      const targetTop = element.getBoundingClientRect().top + window.pageYOffset - getStickyOffset() - extraMargin;
-      window.scrollTo({ top: Math.max(0, targetTop), behavior });
+      window.requestAnimationFrame(() => {
+        updateStickyMetrics();
+        const targetTop = element.getBoundingClientRect().top + window.pageYOffset - getStickyOffset() - extraMargin;
+        window.scrollTo({ top: Math.max(0, targetTop), behavior });
+      });
     });
   }
 
   function scrollToQuizToolbar(behavior = 'smooth') {
-    scrollToElementTop(document.getElementById('quizToolbar'), behavior, 10);
+    scrollToElementTop(document.getElementById('quizToolbar'), behavior, 8);
   }
 
   function scrollToContentTop(behavior = 'smooth') {
     if (!app) return;
     window.requestAnimationFrame(() => {
-      const targetTop = app.getBoundingClientRect().top + window.pageYOffset - getStickyOffset();
-      window.scrollTo({ top: Math.max(0, targetTop), behavior });
+      window.requestAnimationFrame(() => {
+        updateStickyMetrics();
+        const targetTop = app.getBoundingClientRect().top + window.pageYOffset - getStickyOffset();
+        window.scrollTo({ top: Math.max(0, targetTop), behavior });
+      });
+    });
+  }
+
+  function preventIconDrag() {
+    $$('img, .hero-emoji, .hero-badge, .section-icon, .feature-emoji, .card-icon').forEach((el) => {
+      el.setAttribute('draggable', 'false');
+      el.addEventListener('dragstart', (event) => event.preventDefault());
+      el.addEventListener('selectstart', (event) => event.preventDefault());
     });
   }
 
@@ -168,7 +182,7 @@
     return groups.map((group) => {
       const groupKey = currentPet + '-group-' + group.groupIndex;
       const opened = group.breeds.find((item) => item.key === openedBreedKey);
-      const forceOpen = Boolean(breedQuery) || Boolean(opened) || !isMobileLayout();
+      const forceOpen = Boolean(breedQuery) || Boolean(opened);
       const expanded = forceOpen || expandedBreedGroups[currentPet].has(groupKey);
       const cardClass = expanded ? ' is-open' : ' is-collapsed';
       const toggleText = expanded ? '접기' : '펼치기';
@@ -606,20 +620,24 @@
     updateStickyMetrics();
     if (currentTab === 'breeds') {
       renderBreeds();
+      preventIconDrag();
       updateStickyMetrics();
       return;
     }
     if (currentTab === 'checklist') {
       renderChecklist();
+      preventIconDrag();
       updateStickyMetrics();
       return;
     }
     if (currentTab === 'quiz') {
       renderQuiz();
+      preventIconDrag();
       updateStickyMetrics();
       return;
     }
     renderCards(DATA[currentPet].sections[currentTab]);
+    preventIconDrag();
     updateStickyMetrics();
   }
 
@@ -632,6 +650,7 @@
     expandedBreedGroups.cat.clear();
     document.body.className = 'dog-mode';
     renderHero();
+    preventIconDrag();
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -645,6 +664,7 @@
     if (expandedBreedGroups[pet]) expandedBreedGroups[pet].clear();
     document.body.className = pet + '-mode';
     renderHero();
+    preventIconDrag();
     render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -765,10 +785,16 @@
       if (breedBtn) {
         const key = breedBtn.dataset.breedKey;
         openedBreedKey = openedBreedKey === key ? '' : key;
+        if (openedBreedKey) {
+          const groupCard = breedBtn.closest('[data-breed-group-key]');
+          if (groupCard && groupCard.dataset.breedGroupKey) {
+            expandedBreedGroups[currentPet].add(groupCard.dataset.breedGroupKey);
+          }
+        }
         updateBreedList();
         if (openedBreedKey) {
           const card = document.getElementById('breedDetail-' + openedBreedKey);
-          scrollToElementTop(card, 'smooth', 8);
+          scrollToElementTop(card, 'smooth', 12);
         }
       }
     });
@@ -808,6 +834,7 @@
       document.fonts.ready.then(updateStickyMetrics).catch(() => {});
     }
     renderHero();
+    preventIconDrag();
     render();
   }
 
