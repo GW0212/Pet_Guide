@@ -1121,6 +1121,392 @@
       }
     }
 
+
+    /* ─── FINAL FEATURE ADDITIONS: compare, recommendation, cost, emergency, food search ─── */
+    .tool-card {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:0 10px 30px rgba(0,0,0,.055);
+      margin:24px 0;
+      clear:both;
+    }
+    .tool-head {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .tool-head > span {
+      width:48px;
+      height:48px;
+      border-radius:17px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--section-soft);
+      font-size:1.45rem;
+      flex:0 0 auto;
+    }
+    .tool-head strong {
+      display:block;
+      color:var(--section-deep);
+      font-family:'Noto Serif KR', serif;
+      font-size:1.18rem;
+      letter-spacing:-.04em;
+      line-height:1.35;
+    }
+    .tool-head em {
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-style:normal;
+      font-size:.88rem;
+      line-height:1.55;
+    }
+    .compare-selects, .cost-grid, .match-options {
+      display:grid;
+      gap:12px;
+    }
+    .compare-selects { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .compare-actions {
+      display:flex;
+      justify-content:center;
+      margin-top:12px;
+    }
+    .compare-reset {
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--section-deep);
+      border-radius:999px;
+      padding:10px 18px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(0,0,0,.04);
+    }
+    .compare-reset:hover { border-color:var(--section-primary); transform:translateY(-1px); }
+    .compare-select-label, .cost-field {
+      display:grid;
+      gap:7px;
+      color:var(--section-deep);
+      font-weight:900;
+      font-size:.85rem;
+      text-align:center;
+    }
+    .cost-field { text-align:left; }
+    .compare-select-label select,
+    .cost-field input,
+    .tool-input {
+      width:100%;
+      border:1px solid var(--line);
+      background:#fffdf9;
+      border-radius:16px;
+      padding:12px 13px;
+      color:var(--ink);
+      font-weight:800;
+      outline:none;
+    }
+    .compare-select-label select:focus,
+    .cost-field input:focus,
+    .tool-input:focus {
+      border-color:var(--section-primary);
+      box-shadow:0 0 0 4px color-mix(in srgb, var(--section-primary) 14%, transparent);
+    }
+    .compare-empty {
+      margin-top:14px;
+      padding:16px;
+      border-radius:18px;
+      background:var(--section-soft);
+      color:var(--muted);
+      text-align:center;
+      line-height:1.65;
+      font-weight:700;
+    }
+    .compare-result { margin-top:16px; }
+    .compare-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .compare-card {
+      background:var(--section-soft);
+      border:1px solid rgba(255,255,255,.72);
+      border-radius:18px;
+      padding:16px;
+      min-width:0;
+      text-align:center;
+    }
+    .compare-card h4 {
+      font-family:'Noto Serif KR', serif;
+      color:var(--section-deep);
+      font-size:1.1rem;
+      text-align:center;
+      line-height:1.35;
+      letter-spacing:-.04em;
+      margin-bottom:5px;
+    }
+    .compare-group {
+      margin:0 0 12px;
+      text-align:center;
+      color:var(--section-primary);
+      font-size:.78rem;
+      font-weight:900;
+    }
+    .compare-card dl { margin:0; display:grid; gap:10px; text-align:center; }
+    .compare-card dt { color:var(--section-deep); font-weight:900; font-size:.82rem; text-align:center; }
+    .compare-card dd { margin:4px 0 0; color:var(--muted); line-height:1.62; font-size:.82rem; text-align:center; word-break:keep-all; overflow-wrap:anywhere; }
+    .breed-summary {
+      margin:0 auto 14px;
+      padding:13px 16px;
+      border-radius:16px;
+      background:var(--section-soft);
+      color:var(--muted);
+      line-height:1.65;
+      text-align:center;
+      max-width:820px;
+      font-size:.9rem;
+    }
+    .breed-summary strong { color:var(--section-deep); margin-right:6px; }
+    .food-search-tool .tool-input { text-align:center; }
+    .food-results { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .food-result-card {
+      background:var(--section-soft);
+      border-radius:16px;
+      padding:14px;
+      line-height:1.62;
+    }
+    .food-result-card strong { display:block; color:var(--ink); margin-bottom:6px; }
+    .food-result-card p { margin:8px 0 0; color:var(--muted); font-size:.86rem; }
+    .food-risk { display:inline-flex; padding:4px 9px; border-radius:999px; background:#fff; color:var(--section-deep); font-size:.72rem; font-weight:900; }
+    .mini-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .mini-grid article {
+      background:var(--section-soft);
+      border-radius:18px;
+      padding:16px;
+      min-width:0;
+      line-height:1.62;
+    }
+    .mini-grid strong { display:block; color:var(--section-deep); font-size:.95rem; margin-bottom:6px; text-align:center; }
+    .mini-grid p { margin:0; color:var(--muted); font-size:.86rem; }
+    .cost-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .cost-total {
+      margin-top:16px;
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--section-soft),#fff);
+      border:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      text-align:center;
+    }
+    .cost-total span { color:var(--muted); font-weight:900; }
+    .cost-total strong { color:var(--section-primary); font-size:1.55rem; letter-spacing:-.04em; }
+    .cost-total em { color:var(--muted); font-style:normal; font-size:.88rem; }
+    .match-form { display:grid; gap:14px; }
+    .match-field {
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      margin:0;
+      background:#fffdf9;
+    }
+    .match-field legend {
+      padding:0 8px;
+      color:var(--section-deep);
+      font-weight:900;
+      text-align:center;
+    }
+    .match-options { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .match-options label {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:11px 12px;
+      border-radius:16px;
+      background:var(--section-soft);
+      color:var(--muted);
+      font-weight:800;
+      cursor:pointer;
+      line-height:1.45;
+    }
+    .match-options input { width:17px; height:17px; accent-color:var(--section-primary); flex:0 0 auto; }
+    .match-options label:has(input:checked) { background:#fff; color:var(--section-deep); box-shadow:inset 0 0 0 2px var(--section-primary); }
+    .match-result {
+      margin-top:16px;
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--section-soft),#fff);
+      border:1px solid var(--line);
+      text-align:center;
+      color:var(--muted);
+      line-height:1.7;
+    }
+    .match-result strong { display:block; color:var(--section-primary); font-family:'Noto Serif KR', serif; font-size:1.25rem; margin-bottom:8px; }
+    .match-result p { margin:8px 0 0; }
+    .match-note { margin-top:12px !important; }
+    .match-caution { color:var(--faint); font-size:.8rem; line-height:1.6; }
+    .match-breed-chip {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin:4px 3px 0;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--section-deep);
+      font-size:.78rem;
+      font-weight:900;
+      line-height:1.2;
+    }
+    .match-result.muted strong { display:none; }
+    .emergency-fab {
+      position:fixed;
+      right:18px;
+      bottom:74px;
+      z-index:80;
+      width:46px;
+      height:46px;
+      border:0;
+      border-radius:50%;
+      background:#e24a3b;
+      color:#fff;
+      box-shadow:0 12px 28px rgba(0,0,0,.20);
+      font-size:1.15rem;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .emergency-modal {
+      position:fixed;
+      inset:0;
+      z-index:120;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(0,0,0,.38);
+    }
+    .emergency-modal.open { display:flex; }
+    .emergency-panel {
+      position:relative;
+      width:min(100%,520px);
+      max-height:min(82vh,680px);
+      overflow:auto;
+      background:#fff;
+      border-radius:28px;
+      padding:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.22);
+      border:2px solid #e24a3b;
+    }
+    .emergency-close {
+      position:absolute;
+      top:12px;
+      right:12px;
+      width:38px;
+      height:38px;
+      border:0;
+      border-radius:50%;
+      background:#fff0ee;
+      color:#9d281f;
+      font-size:1.35rem;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .emergency-panel h3 {
+      font-family:'Noto Serif KR', serif;
+      color:#9d281f;
+      font-size:1.45rem;
+      text-align:center;
+      margin:0 40px 14px;
+    }
+    .emergency-panel p { color:var(--muted); line-height:1.7; text-align:center; }
+    .emergency-panel ul { margin:14px 0; padding-left:20px; color:var(--ink); line-height:1.7; }
+    .emergency-note { background:#fff0ee; color:#9d281f; border-radius:16px; padding:14px; text-align:center; font-weight:900; line-height:1.6; }
+
+    @media (max-width:940px) {
+      .compare-selects, .compare-grid, .cost-grid { grid-template-columns:1fr; }
+      .food-results, .mini-grid { grid-template-columns:1fr; }
+      .match-options { grid-template-columns:1fr; }
+    }
+    @media (max-width:560px) {
+      .section-nav { grid-template-columns:repeat(3, minmax(0,1fr)) !important; }
+      .section-nav .tab-btn { min-height:38px !important; font-size:.62rem !important; padding:6px 3px !important; border-radius:14px !important; }
+      .tool-card { padding:16px 12px; border-radius:20px; margin:18px 0; }
+      .tool-head { gap:8px; margin-bottom:14px; }
+      .tool-head > span { width:42px; height:42px; border-radius:14px; font-size:1.2rem; }
+      .tool-head strong { font-size:1rem; }
+      .tool-head em { font-size:.78rem; line-height:1.5; }
+      .breed-summary { text-align:left; font-size:.8rem; line-height:1.55; padding:12px; }
+      .compare-select-label, .cost-field { font-size:.78rem; }
+      .compare-actions { margin-top:10px; }
+      .compare-reset { width:100%; max-width:220px; padding:10px 14px; font-size:.82rem; }
+      .compare-select-label select, .cost-field input, .tool-input { padding:11px; border-radius:14px; font-size:.82rem; }
+      .compare-card, .food-result-card, .mini-grid article { padding:12px; border-radius:14px; }
+      .compare-card h4 { font-size:.98rem; }
+      .compare-card dd, .food-result-card p, .mini-grid p { font-size:.78rem; line-height:1.55; }
+      .cost-total { padding:14px; gap:8px; }
+      .cost-total strong { font-size:1.25rem; }
+      .match-field { padding:13px 10px; border-radius:16px; }
+      .match-options label { padding:10px; border-radius:14px; font-size:.82rem; }
+      .emergency-fab { width:42px; height:42px; right:14px; bottom:calc(max(14px, env(safe-area-inset-bottom)) + 52px); }
+      .emergency-panel { padding:20px 14px; border-radius:22px; }
+      .emergency-panel h3 { font-size:1.2rem; }
+    }
+
+
+    /* ─── FINAL QA PATCH: compare select centering + mobile polish ─── */
+    .compare-select-label select {
+      text-align:center !important;
+      text-align-last:center !important;
+      -moz-text-align-last:center !important;
+      cursor:pointer;
+    }
+    .compare-select-label select option,
+    .compare-select-label option { text-align:center; }
+    .compare-card,
+    .compare-card * {
+      text-align:center;
+    }
+    @media (max-width:560px) {
+      .compare-selects { gap:10px; }
+      .compare-select-label { gap:6px; }
+      .compare-select-label select {
+        min-height:44px;
+        padding:10px 36px 10px 14px;
+        line-height:1.35;
+      }
+      .compare-grid { gap:10px; }
+      .compare-card {
+        padding:14px 12px;
+        border-radius:16px;
+      }
+      .compare-card dl { gap:8px; }
+      .compare-card dt { font-size:.8rem; }
+      .compare-card dd {
+        max-width:31em;
+        margin-left:auto;
+        margin-right:auto;
+        word-break:keep-all;
+        overflow-wrap:anywhere;
+      }
+      .food-search-tool .tool-input,
+      .cost-field input,
+      .tool-input {
+        min-height:44px;
+      }
+      .tool-card + .tool-card,
+      .tool-card + .info-grid,
+      .info-grid + .notice,
+      .mini-grid + .notice,
+      .check-progress + .check-grid,
+      .quiz-card + .notice {
+        margin-top:18px !important;
+      }
+    }
   </style>
 </head>
 <body class="dog-mode">
@@ -1149,6 +1535,7 @@
     <button class="tab-btn" type="button" data-tab="food">🚫 먹으면 안 되는 음식</button>
     <button class="tab-btn" type="button" data-tab="care">💡 돌봄 팁</button>
     <button class="tab-btn" type="button" data-tab="checklist">✅ 입양 전 체크</button>
+    <button class="tab-btn" type="button" data-tab="match">🎯 맞춤 추천</button>
     <button class="tab-btn" type="button" data-tab="quiz">🐶 관련 지식 테스트</button>
     <button class="tab-btn" type="button" data-tab="behavior">📘 행동 언어</button>
   </div>
@@ -1163,6 +1550,14 @@
   </footer>
 
   <button class="back-to-top" id="backToTop" type="button" aria-label="최상단으로 이동">↑</button>
+  <button class="emergency-fab" id="emergencyBtn" type="button" aria-label="응급 체크 열기">🚑</button>
+  <div class="emergency-modal" id="emergencyModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="emergencyTitle">
+    <div class="emergency-panel">
+      <button class="emergency-close" id="emergencyClose" type="button" aria-label="응급 체크 닫기">×</button>
+      <h3 id="emergencyTitle">응급 체크</h3>
+      <div id="emergencyBody"></div>
+    </div>
+  </div>
   <script src="data.js" defer></script>
   <script src="app.js" defer></script>
 </body>

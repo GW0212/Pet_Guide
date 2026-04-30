@@ -2,7 +2,7 @@
   'use strict';
 
   const DATA = window.PET_DATA;
-  const TABS = ['breeds', 'likes', 'dislikes', 'food', 'care', 'checklist', 'quiz', 'behavior'];
+  const TABS = ['breeds', 'likes', 'dislikes', 'food', 'care', 'checklist', 'match', 'quiz', 'behavior'];
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
@@ -11,7 +11,10 @@
   let breedQuery = '';
   let openedBreedKey = '';
   let isComposing = false;
+  let foodQuery = '';
   const quizState = { dog: null, cat: null };
+  const compareState = { dog: ['', '', ''], cat: ['', '', ''] };
+  const matchAnswers = { dog: {}, cat: {} };
   const expandedBreedGroups = { dog: new Set(), cat: new Set() };
 
   const app = $('#app');
@@ -32,6 +35,70 @@
 
   function getBreedKey(groupIndex, breedIndex) {
     return currentPet + '-' + groupIndex + '-' + breedIndex;
+  }
+
+
+  function getAllBreedItems(petKey = currentPet) {
+    const pet = DATA[petKey];
+    const items = [];
+    pet.groups.forEach((group, groupIndex) => {
+      group.breeds.forEach((breed, breedIndex) => {
+        const name = getBreedName(breed);
+        items.push({
+          key: petKey + '-' + groupIndex + '-' + breedIndex,
+          petKey,
+          groupIndex,
+          breedIndex,
+          groupName: group.name,
+          groupDesc: group.desc,
+          breed,
+          name
+        });
+      });
+    });
+    return items.sort((a, b) => a.name.localeCompare(b.name, 'ko-KR'));
+  }
+
+  function findBreedItemByKey(key, petKey = currentPet) {
+    return getAllBreedItems(petKey).find((item) => item.key === key) || null;
+  }
+
+  function getBreedOneLineSummary(groupName, name) {
+    if (currentPet === 'dog') {
+      if (/토이|반려/.test(groupName)) return name + '은(는) 실내 적응력은 좋지만 치아·관절·분리불안 관리가 핵심인 소형 반려견 유형입니다.';
+      if (/조렵|회수|스포츠/.test(groupName)) return name + '은(는) 활동량과 탐색 욕구가 높아 산책·놀이·훈련 루틴이 반드시 필요한 활동형 견종입니다.';
+      if (/목양|허딩/.test(groupName)) return name + '은(는) 지능과 반응성이 높아 규칙적인 과제와 일관된 훈련이 잘 맞는 견종입니다.';
+      if (/하운드|수렵/.test(groupName)) return name + '은(는) 냄새나 움직임을 쫓는 본능이 강해 리드줄 관리와 회상 훈련이 중요합니다.';
+      if (/테리어/.test(groupName)) return name + '은(는) 활발하고 집요한 편이라 충분한 에너지 발산과 씹기 욕구 관리가 필요합니다.';
+      if (/워킹|사역|작업/.test(groupName)) return name + '은(는) 체격과 힘이 있는 경우가 많아 공간, 운동, 핸들링 준비가 중요합니다.';
+      return name + '은(는) 외형보다 실제 활동량, 건강 상태, 생활 환경을 기준으로 돌봄 계획을 세워야 하는 품종입니다.';
+    }
+    if (/장모|메인쿤|페르시안|랙돌|노르웨이|히말라얀|라가머핀/.test(groupName + name)) return name + '은(는) 털 관리와 헤어볼, 체중 관리를 함께 봐야 하는 장모·대형묘 성향의 품종입니다.';
+    if (/뱅갈|아비시니안|사바나|토이거|오시캣/.test(name)) return name + '은(는) 활동량과 탐색 욕구가 높아 수직 공간과 사냥놀이가 중요한 고양이입니다.';
+    if (/스코티시|먼치킨|킬트/.test(name)) return name + '은(는) 귀·다리·관절 관련 특징을 세심하게 확인해야 하는 품종입니다.';
+    if (/스핑크스|피터볼드|돈스코이|밤비노/.test(name)) return name + '은(는) 피모가 적어 피부 유분, 체온 유지, 햇빛 노출 관리가 중요한 품종입니다.';
+    return name + '은(는) 품종 경향보다 실제 성격, 놀이 반응, 화장실 습관, 건강 상태를 함께 확인해야 합니다.';
+  }
+
+  function cardsMarkup(section) {
+    return '<div class="info-grid">' + section.cards.map((card) => (
+      '<article class="info-card">' +
+        '<div class="card-head">' +
+          '<div class="card-icon">' + escapeHTML(card.icon) + '</div>' +
+          '<div>' +
+            '<div class="card-title">' + escapeHTML(card.title) + '</div>' +
+            '<div class="card-subtitle">' + escapeHTML(card.subtitle || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="item-list">' + card.items.map((item) => (
+          '<div class="list-item"><span class="dot">•</span><div><strong>' + escapeHTML(item[0]) + '</strong><span class="txt">' + escapeHTML(item[1]) + '</span></div></div>'
+        )).join('') + '</div>' +
+      '</article>'
+    )).join('') + '</div>';
+  }
+
+  function sourceNotice() {
+    return '<div class="notice"><strong>실전 기준:</strong> 정보는 학습용 기본값입니다. 통증, 식욕 저하, 반복 구토, 호흡 이상, 배뇨 문제, 갑작스러운 공격성처럼 평소와 다른 변화가 보이면 인터넷 정보보다 진료가 우선입니다.</div>';
   }
 
   function uniqCount(groups) {
@@ -96,6 +163,8 @@
     $$('.nav-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.pet === currentPet));
     const quizBtn = $('.tab-btn[data-tab="quiz"]');
     if (quizBtn) quizBtn.textContent = DATA[currentPet].theme.emoji + ' 관련 지식 테스트';
+    const matchBtn = $('.tab-btn[data-tab="match"]');
+    if (matchBtn) matchBtn.textContent = '🎯 맞춤 추천';
     $$('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === currentTab));
   }
 
@@ -184,6 +253,7 @@
       '<article class="breed-detail-card" id="breedDetail-' + escapeHTML(item.key) + '">' +
         '<button class="detail-close" type="button" data-close-breed="true" aria-label="품종 정보 닫기">×</button>' +
         '<h4>' + escapeHTML(name) + '</h4>' +
+        '<p class="breed-summary"><strong>한 줄 요약</strong> ' + escapeHTML(getBreedOneLineSummary(groupName, name)) + '</p>' +
         '<div class="breed-detail-grid">' +
           '<div class="breed-fact"><strong>생활 적합도</strong><span>' + escapeHTML(getBreedLifestyleNote(groupName, name)) + '</span></div>' +
           '<div class="breed-fact"><strong>핵심 특징</strong><span>' + escapeHTML(profile) + '</span></div>' +
@@ -254,11 +324,51 @@
     });
   }
 
+
+  function comparePanelMarkup() {
+    const all = getAllBreedItems(currentPet);
+    const options = '<option value="">품종 선택</option>' + all.map((item) => (
+      '<option value="' + escapeHTML(item.key) + '">' + escapeHTML(item.name) + '</option>'
+    )).join('');
+    const selects = compareState[currentPet].map((value, index) => (
+      '<label class="compare-select-label"><span>' + (index + 1) + '번 품종</span><select class="compare-select" data-compare-index="' + index + '">' + options.replace('value="' + escapeHTML(value) + '"', 'value="' + escapeHTML(value) + '" selected') + '</select></label>'
+    )).join('');
+    const selected = compareState[currentPet].map((key) => findBreedItemByKey(key)).filter(Boolean);
+    const result = selected.length ? (
+      '<div class="compare-result">' +
+        '<div class="compare-grid">' + selected.map((item) => {
+          const breed = item.breed;
+          const profile = typeof breed === 'string' ? getBreedOneLineSummary(item.groupName, item.name) : breed.profile;
+          const care = typeof breed === 'string' ? getBreedLifestyleNote(item.groupName, item.name) : breed.care;
+          const health = typeof breed === 'string' ? '정기 검진, 체중 관리, 치아 관리, 예방접종과 구충을 기본 루틴으로 유지하세요.' : breed.health;
+          return '<article class="compare-card">' +
+            '<h4>' + escapeHTML(item.name) + '</h4>' +
+            '<p class="compare-group">' + escapeHTML(item.groupName) + '</p>' +
+            '<dl>' +
+              '<div><dt>한 줄 판단</dt><dd>' + escapeHTML(getBreedOneLineSummary(item.groupName, item.name)) + '</dd></div>' +
+              '<div><dt>핵심 특징</dt><dd>' + escapeHTML(profile) + '</dd></div>' +
+              '<div><dt>관리 포인트</dt><dd>' + escapeHTML(care) + '</dd></div>' +
+              '<div><dt>건강 주의</dt><dd>' + escapeHTML(health) + '</dd></div>' +
+            '</dl>' +
+          '</article>';
+        }).join('') + '</div>' +
+      '</div>'
+    ) : '<div class="compare-empty">비교할 품종을 2~3개 선택하면 생활 적합도와 관리 포인트를 한눈에 확인할 수 있습니다.</div>';
+    return '' +
+      '<section class="tool-card compare-tool" id="breedCompareTool">' +
+        '<div class="tool-head"><span>⚖️</span><div><strong>품종 비교</strong><em>2~3개 품종을 가나다순으로 선택해 활동량, 관리 포인트, 건강 주의를 비교합니다.</em></div></div>' +
+        '<div class="compare-selects">' + selects + '</div>' +
+        '<div class="compare-actions"><button class="compare-reset" type="button" data-compare-reset="true">선택 초기화</button></div>' +
+        result +
+      '</section>';
+  }
+
   function renderBreeds() {
     const pet = DATA[currentPet];
     app.innerHTML = '' +
       sectionHeader('🏷️', pet.theme.label + ' 품종 & 특징', pet.theme.label + ' 품종을 한국어 목록으로 정리했습니다', pet.breedBasis) +
       '<div class="source-box"><strong>사용 방법:</strong> 품종 버튼을 누르면 상세 정보 카드가 펼쳐집니다. 같은 버튼을 다시 누르거나 카드 우측 상단 × 버튼을 누르면 닫힙니다.</div>' +
+      comparePanelMarkup() +
       '<div class="feature-grid">' + pet.featured.map((breed) => (
         '<article class="feature-card">' +
           '<div class="feature-emoji">' + escapeHTML(breed.emoji) + '</div>' +
@@ -598,6 +708,7 @@
         '<div class="progress-track" aria-hidden="true"><div class="progress-fill" id="checkProgressFill"></div></div>' +
         '<button class="reset-checks" type="button" data-reset-checks="true">체크 초기화</button>' +
       '</div>' +
+      costCalculatorMarkup() +
       '<div class="checklist-grid">' + checklist.groups.map((group, groupIndex) => (
         '<article class="check-card">' +
           '<div class="card-head">' +
@@ -618,24 +729,242 @@
     updateChecklistProgress();
   }
 
-  function renderCards(section) {
+
+  function getFoodSearchEntries(section, rawQuery = foodQuery) {
+    const query = normalizeText(rawQuery);
+    const entries = [];
+    section.cards.forEach((card) => card.items.forEach((item) => {
+      const name = item[0] || '';
+      const desc = item[1] || '';
+      const haystack = normalizeText(name + ' ' + desc + ' ' + card.title + ' ' + (card.subtitle || ''));
+      if (!query || haystack.indexOf(query) !== -1) entries.push({ card, item });
+    }));
+    return entries;
+  }
+
+  function foodResultsMarkup(section, rawQuery = foodQuery) {
+    const entries = getFoodSearchEntries(section, rawQuery);
+    if (!rawQuery) return '<div class="compare-empty">음식명을 검색하면 위험도와 대응 포인트를 바로 확인할 수 있습니다.</div>';
+    if (!entries.length) return '<div class="compare-empty">검색 결과가 없습니다. 음식명을 짧게 입력해 보세요. 예: 포도, 우유, 초콜릿</div>';
+    return entries.map((entry) => (
+      '<article class="food-result-card">' +
+        '<strong>' + escapeHTML(entry.item[0]) + '</strong>' +
+        '<span class="food-risk">' + escapeHTML(entry.card.title) + '</span>' +
+        '<p>' + escapeHTML(entry.item[1]) + '</p>' +
+      '</article>'
+    )).join('');
+  }
+
+  function updateFoodResults() {
+    const section = DATA[currentPet].sections.food;
+    const results = document.getElementById('foodResults');
+    if (results) results.innerHTML = foodResultsMarkup(section, foodQuery);
+  }
+
+  function setupFoodSearch() {
+    const input = document.getElementById('foodSearch');
+    if (!input) return;
+    input.value = foodQuery;
+    input.addEventListener('compositionstart', () => { isComposing = true; });
+    input.addEventListener('compositionend', () => {
+      isComposing = false;
+      foodQuery = input.value;
+      updateFoodResults();
+    });
+    input.addEventListener('input', () => {
+      if (isComposing) return;
+      foodQuery = input.value;
+      updateFoodResults();
+    });
+  }
+
+  function foodSearchMarkup(section) {
+    return '' +
+      '<section class="tool-card food-search-tool">' +
+        '<div class="tool-head"><span>🔎</span><div><strong>위험 음식 빠른 검색</strong><em>음식명을 입력하면 위험도와 대응 포인트가 바로 표시됩니다.</em></div></div>' +
+        '<input class="tool-input" id="foodSearch" type="search" inputmode="search" autocomplete="off" placeholder="음식 검색 · 예: 초콜릿, 포도, 우유" value="' + escapeHTML(foodQuery) + '" />' +
+        '<div class="food-results" id="foodResults">' + foodResultsMarkup(section, foodQuery) + '</div>' +
+      '</section>';
+  }
+
+  function renderFood() {
+    const section = DATA[currentPet].sections.food;
+    app.innerHTML = sectionHeader(section.icon, section.kicker, section.title, section.lead || '') + foodSearchMarkup(section) + cardsMarkup(section) + sourceNotice();
+    setupFoodSearch();
+  }
+
+  const lifecycleData = {
+    dog: [
+      ['새끼 시기', '사회화, 배변, 짧은 훈련, 예방접종 루틴이 핵심입니다. 과한 점프와 장거리 운동은 성장판과 관절에 부담이 될 수 있습니다.'],
+      ['성견 시기', '체중, 치아, 피부, 산책 루틴을 안정적으로 유지해야 합니다. 문제 행동은 운동 부족보다 규칙 부재에서 시작되는 경우가 많습니다.'],
+      ['노령견 시기', '6개월 단위 검진, 관절 보조, 미끄럼 방지, 시력·청력 변화 관찰이 중요합니다. 활동량은 줄이되 냄새 탐색과 가벼운 놀이를 유지하세요.'],
+      ['중성화·예방', '나이, 체중, 품종, 질환 여부에 따라 시기가 달라집니다. 일정은 수의사와 상담해 확정하는 것이 안전합니다.']
+    ],
+    cat: [
+      ['새끼 시기', '화장실 위치, 스크래처, 손을 장난감으로 쓰지 않는 놀이 규칙을 초반에 잡아야 합니다.'],
+      ['성묘 시기', '체중, 음수량, 화장실 횟수, 놀이 시간을 꾸준히 확인하세요. 고양이는 아픈 티를 늦게 내는 편입니다.'],
+      ['노령묘 시기', '신장, 치아, 관절, 갑상선 관련 변화 관찰이 중요합니다. 물그릇과 화장실 접근성을 높여 주세요.'],
+      ['중성화·예방', '발정 스트레스, 생식기 질환, 영역 표시를 줄이는 데 도움이 될 수 있으나 개체 상태에 따라 상담이 필요합니다.']
+    ]
+  };
+
+  const mistakeData = {
+    dog: [
+      ['사람 음식 급여', '귀엽다고 한 입 주는 습관이 췌장염, 비만, 독성 섭취 사고로 이어질 수 있습니다.'],
+      ['산책을 배변 시간으로만 보기', '강아지에게 산책은 냄새 정보 수집과 스트레스 해소 시간입니다.'],
+      ['문제 행동을 고집으로만 판단', '짖음, 물기, 파괴는 불안, 통증, 지루함, 규칙 부재의 신호일 수 있습니다.'],
+      ['예방 관리 미루기', '접종, 구충, 치아 관리는 문제가 생긴 뒤보다 미리 하는 편이 안전하고 비용도 낮습니다.']
+    ],
+    cat: [
+      ['화장실을 적게 두기', '다묘 가정은 고양이 수 + 1개가 기본입니다. 위치와 청결도 중요합니다.'],
+      ['강제로 안기', '고양이는 선택권을 중요하게 느낍니다. 억지 스킨십은 공격성과 회피를 키울 수 있습니다.'],
+      ['놀이 부족', '사냥 놀이가 부족하면 새벽 소란, 과식, 공격 놀이로 이어질 수 있습니다.'],
+      ['물 섭취 무시', '고양이는 음수량이 부족하기 쉬워 습식, 물그릇 위치, 음수대를 함께 고려해야 합니다.']
+    ]
+  };
+
+  function extraLearningMarkup() {
+    return '' +
+      '<section class="tool-card learning-tool">' +
+        '<div class="tool-head"><span>📅</span><div><strong>생애주기 관리</strong><em>나이에 따라 관리 기준이 달라집니다.</em></div></div>' +
+        '<div class="mini-grid">' + lifecycleData[currentPet].map((item) => '<article><strong>' + escapeHTML(item[0]) + '</strong><p>' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
+      '</section>' +
+      '<section class="tool-card mistakes-tool">' +
+        '<div class="tool-head"><span>⚠️</span><div><strong>초보자 실수 모음</strong><em>반려 생활 초반에 가장 많이 놓치는 부분입니다.</em></div></div>' +
+        '<div class="mini-grid">' + mistakeData[currentPet].map((item) => '<article><strong>' + escapeHTML(item[0]) + '</strong><p>' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
+      '</section>';
+  }
+
+  function renderCare() {
+    const section = DATA[currentPet].sections.care;
+    app.innerHTML = sectionHeader(section.icon, section.kicker, section.title, section.lead || '') + cardsMarkup(section) + extraLearningMarkup() + sourceNotice();
+  }
+
+  function costDefaults() {
+    return currentPet === 'dog'
+      ? { food: 60000, snack: 20000, grooming: 50000, medical: 30000, prevention: 25000, supplies: 20000 }
+      : { food: 55000, snack: 18000, grooming: 10000, medical: 30000, prevention: 15000, supplies: 35000 };
+  }
+
+  function getCostValues() {
+    const defaults = costDefaults();
+    const values = {};
+    Object.keys(defaults).forEach((key) => {
+      const input = document.querySelector('[data-cost-key="' + key + '"]');
+      values[key] = input ? Math.max(0, Number(input.value || 0)) : defaults[key];
+    });
+    return values;
+  }
+
+  function formatWon(value) {
+    return Math.round(value).toLocaleString('ko-KR') + '원';
+  }
+
+  function updateCostTotal() {
+    const values = getCostValues();
+    const total = Object.values(values).reduce((sum, value) => sum + value, 0);
+    const totalEl = document.getElementById('costTotal');
+    const yearlyEl = document.getElementById('costYearly');
+    if (totalEl) totalEl.textContent = formatWon(total);
+    if (yearlyEl) yearlyEl.textContent = formatWon(total * 12);
+  }
+
+  function costCalculatorMarkup() {
+    const defaults = costDefaults();
+    const labels = currentPet === 'dog'
+      ? { food: '사료비', snack: '간식비', grooming: '미용비', medical: '병원 예비비', prevention: '예방약·구충', supplies: '배변패드·장난감' }
+      : { food: '사료비', snack: '간식비', grooming: '미용·빗질 용품', medical: '병원 예비비', prevention: '예방약·구충', supplies: '모래·스크래처' };
+    const fields = Object.keys(defaults).map((key) => (
+      '<label class="cost-field"><span>' + escapeHTML(labels[key]) + '</span><input type="number" min="0" step="1000" data-cost-key="' + key + '" value="' + defaults[key] + '" /></label>'
+    )).join('');
+    return '' +
+      '<section class="tool-card cost-tool">' +
+        '<div class="tool-head"><span>💰</span><div><strong>월 예상 비용 계산기</strong><em>입양 전 실제 유지비를 숫자로 확인합니다. 기본값은 수정 가능합니다.</em></div></div>' +
+        '<div class="cost-grid">' + fields + '</div>' +
+        '<div class="cost-total"><span>예상 월 비용</span><strong id="costTotal">0원</strong><em>연간 약 <b id="costYearly">0원</b></em></div>' +
+      '</section>';
+  }
+
+  const matchQuestions = [
+    { key: 'time', label: '하루 돌봄 가능 시간', options: [['low', '30분 이하'], ['mid', '30분~1시간'], ['high', '1시간 이상']] },
+    { key: 'activity', label: '원하는 활동량', options: [['low', '조용한 생활'], ['mid', '적당한 놀이'], ['high', '활동적인 산책·놀이']] },
+    { key: 'grooming', label: '털 관리 부담', options: [['low', '최소 관리 선호'], ['mid', '주기적 빗질 가능'], ['high', '미용·장모 관리 가능']] },
+    { key: 'alone', label: '집을 비우는 시간', options: [['low', '짧은 편'], ['mid', '보통'], ['high', '긴 편']] },
+    { key: 'budget', label: '월 관리 비용 여유', options: [['low', '낮음'], ['mid', '보통'], ['high', '충분함']] }
+  ];
+
+  function getMatchRecommendedBreeds(answers) {
+    if (currentPet === 'dog') {
+      if (answers.activity === 'high') {
+        return answers.grooming === 'low'
+          ? ['래브라도 리트리버', '비글', '달마시안', '저먼 쇼트헤어드 포인터']
+          : ['골든 리트리버', '보더 콜리', '오스트레일리안 셰퍼드', '스탠더드 푸들'];
+      }
+      if (answers.activity === 'low') {
+        return answers.grooming === 'high'
+          ? ['말티즈', '비숑 프리제', '시추', '토이 푸들']
+          : ['프렌치 불독', '퍼그', '치와와', '보스턴 테리어'];
+      }
+      return answers.grooming === 'high'
+        ? ['미니어처 푸들', '코커 스패니얼', '캐벌리어 킹 찰스 스패니얼', '비숑 프리제']
+        : ['웰시 코기 펨브로크', '시바이누', '진돗개', '미니어처 슈나우저'];
+    }
+    if (answers.activity === 'high') return ['뱅갈', '아비시니안', '오시캣', '사바나', '토이거'];
+    if (answers.activity === 'low') {
+      return answers.grooming === 'high'
+        ? ['페르시안', '랙돌', '히말라얀', '라가머핀']
+        : ['브리티시 숏헤어', '러시안 블루', '엑조틱 숏헤어', '스코티시 폴드'];
+    }
+    return ['코리안 숏헤어', '아메리칸 숏헤어', '샴', '버만', '데본 렉스'];
+  }
+
+  function evaluateMatch() {
+    const answers = matchAnswers[currentPet];
+    const missing = matchQuestions.find((q) => !answers[q.key]);
+    if (missing) return { missing: missing.label };
+    let score = 0;
+    if (answers.time === 'high') score += 2; else if (answers.time === 'mid') score += 1;
+    if (answers.budget === 'high') score += 2; else if (answers.budget === 'mid') score += 1;
+    if (answers.alone === 'low') score += 2; else if (answers.alone === 'mid') score += 1;
+    const style = currentPet === 'dog'
+      ? (answers.activity === 'high' ? '활동형 견종' : answers.activity === 'low' ? '소형 반려견·차분한 성향의 견종' : '중간 활동량의 반려견')
+      : (answers.activity === 'high' ? '활동형 고양이' : answers.activity === 'low' ? '차분한 성향의 고양이' : '중간 활동량의 고양이');
+    const level = score >= 5 ? '입양 준비 적합도 높음' : score >= 3 ? '조건 보완 후 입양 권장' : '입양 전 준비 보강 필요';
+    const message = score >= 5
+      ? '시간, 비용, 생활 루틴이 비교적 안정적입니다. 실제 입양 전에는 알레르기, 병원 접근성, 가족 동의까지 최종 확인하세요.'
+      : score >= 3
+        ? '기본 조건은 가능하지만 일부 항목 보완이 필요합니다. 특히 혼자 있는 시간과 비용 계획을 현실적으로 조정하세요.'
+        : '현재 조건에서는 귀여움보다 리스크가 큽니다. 돌봄 시간, 비용, 가족 합의부터 먼저 준비하는 편이 안전합니다.';
+    return { level, style, message, breeds: getMatchRecommendedBreeds(answers) };
+  }
+
+  function renderMatchResult() {
+    const result = evaluateMatch();
+    if (result.missing) return '<div class="match-result muted">모든 문항을 선택하면 추천 결과가 표시됩니다.</div>';
+    return '<div class="match-result"><strong>' + escapeHTML(result.level) + '</strong><p><b>추천 유형:</b> ' + escapeHTML(result.style) + '</p><p><b>추천 품종 예시:</b> ' + result.breeds.map((name) => '<span class="match-breed-chip">' + escapeHTML(name) + '</span>').join('') + '</p><p class="match-note">' + escapeHTML(result.message) + '</p><p class="match-caution">※ 품종 예시는 참고용입니다. 실제 입양은 개체 성격, 건강 상태, 보호자의 생활 루틴을 기준으로 판단하세요.</p></div>';
+  }
+
+  function renderMatch() {
+    const petLabel = DATA[currentPet].theme.label;
+    const answers = matchAnswers[currentPet];
     app.innerHTML = '' +
-      sectionHeader(section.icon, section.kicker, section.title, section.lead || '') +
-      '<div class="info-grid">' + section.cards.map((card) => (
-        '<article class="info-card">' +
-          '<div class="card-head">' +
-            '<div class="card-icon">' + escapeHTML(card.icon) + '</div>' +
-            '<div>' +
-              '<div class="card-title">' + escapeHTML(card.title) + '</div>' +
-              '<div class="card-subtitle">' + escapeHTML(card.subtitle || '') + '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="item-list">' + card.items.map((item) => (
-            '<div class="list-item"><span class="dot">•</span><div><strong>' + escapeHTML(item[0]) + '</strong><span class="txt">' + escapeHTML(item[1]) + '</span></div></div>'
-          )).join('') + '</div>' +
-        '</article>'
-      )).join('') + '</div>' +
-      '<div class="notice"><strong>실전 기준:</strong> 정보는 학습용 기본값입니다. 통증, 식욕 저하, 반복 구토, 호흡 이상, 배뇨 문제, 갑작스러운 공격성처럼 평소와 다른 변화가 보이면 인터넷 정보보다 진료가 우선입니다.</div>';
+      sectionHeader('🎯', petLabel + ' 맞춤 추천 테스트', '내 생활 조건에 맞는 반려동물 유형을 점검합니다', '입양 가능 여부를 확정하는 기능은 아니며, 시간·비용·주거 환경·가족 동의까지 함께 판단해야 합니다.') +
+      '<section class="tool-card match-tool">' +
+        '<div class="tool-head"><span>🧭</span><div><strong>생활 조건 체크</strong><em>답변을 선택하면 추천 유형과 준비도를 즉시 확인합니다.</em></div></div>' +
+        '<div class="match-form">' + matchQuestions.map((q) => (
+          '<fieldset class="match-field"><legend>' + escapeHTML(q.label) + '</legend>' +
+            '<div class="match-options">' + q.options.map((opt) => (
+              '<label><input type="radio" name="match-' + q.key + '" data-match-key="' + q.key + '" value="' + opt[0] + '"' + (answers[q.key] === opt[0] ? ' checked' : '') + ' /><span>' + escapeHTML(opt[1]) + '</span></label>'
+            )).join('') + '</div>' +
+          '</fieldset>'
+        )).join('') + '</div>' +
+        '<div id="matchResult">' + renderMatchResult() + '</div>' +
+      '</section>' +
+      '<div class="notice"><strong>주의:</strong> 추천 결과는 학습용입니다. 실제 입양 전에는 보호자의 근무 시간, 비용, 알레르기, 병원 접근성, 장기 돌봄 가능성을 별도로 점검하세요.</div>';
+  }
+
+  function renderCards(section) {
+    app.innerHTML = sectionHeader(section.icon, section.kicker, section.title, section.lead || '') + cardsMarkup(section) + sourceNotice();
   }
 
   function render() {
@@ -647,8 +976,27 @@
       updateStickyMetrics();
       return;
     }
+    if (currentTab === 'food') {
+      renderFood();
+      preventIconDrag();
+      updateStickyMetrics();
+      return;
+    }
+    if (currentTab === 'care') {
+      renderCare();
+      preventIconDrag();
+      updateStickyMetrics();
+      return;
+    }
     if (currentTab === 'checklist') {
       renderChecklist();
+      preventIconDrag();
+      updateStickyMetrics();
+      updateCostTotal();
+      return;
+    }
+    if (currentTab === 'match') {
+      renderMatch();
       preventIconDrag();
       updateStickyMetrics();
       return;
@@ -668,6 +1016,7 @@
     currentPet = 'dog';
     currentTab = 'breeds';
     breedQuery = '';
+    foodQuery = '';
     openedBreedKey = '';
     expandedBreedGroups.dog.clear();
     expandedBreedGroups.cat.clear();
@@ -683,6 +1032,7 @@
     currentPet = pet;
     currentTab = 'breeds';
     breedQuery = '';
+    foodQuery = '';
     openedBreedKey = '';
     if (expandedBreedGroups[pet]) expandedBreedGroups[pet].clear();
     document.body.className = pet + '-mode';
@@ -706,6 +1056,18 @@
     scrollToContentTop('smooth');
   }
 
+
+  function renderEmergencyModal() {
+    const modalBody = document.getElementById('emergencyBody');
+    if (!modalBody) return;
+    const items = currentPet === 'dog'
+      ? ['초콜릿·자일리톨·포도·양파류 섭취', '호흡곤란, 잇몸 창백, 발작', '반복 구토·혈변·복부 팽만', '배뇨 불가 또는 갑작스러운 마비', '갑작스러운 공격성·심한 통증 반응']
+      : ['양파류·초콜릿·카페인·알코올 섭취', '호흡곤란, 개구호흡, 발작', '반복 구토·식욕 완전 저하', '배뇨 자세만 잡고 소변이 나오지 않음', '높은 곳에서 추락 후 절뚝거림·숨기'];
+    modalBody.innerHTML = '<p><strong>' + escapeHTML(DATA[currentPet].theme.label) + ' 응급 체크</strong><br />아래 항목 중 하나라도 해당되면 인터넷 검색보다 동물병원 상담이 우선입니다.</p>' +
+      '<ul>' + items.map((item) => '<li>' + escapeHTML(item) + '</li>').join('') + '</ul>' +
+      '<div class="emergency-note">섭취한 음식, 시간, 추정량, 증상을 메모해 병원에 전달하세요.</div>';
+  }
+
   function bindEvents() {
     window.addEventListener('resize', () => { updateStickyMetrics(); if (currentTab === 'breeds') updateBreedList(); });
     window.addEventListener('orientationchange', () => { updateStickyMetrics(); if (currentTab === 'breeds') updateBreedList(); });
@@ -719,6 +1081,12 @@
     }));
 
     $('#backToTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    const emergencyBtn = $('#emergencyBtn');
+    const emergencyModal = $('#emergencyModal');
+    const emergencyClose = $('#emergencyClose');
+    if (emergencyBtn && emergencyModal) emergencyBtn.addEventListener('click', () => { renderEmergencyModal(); emergencyModal.classList.add('open'); emergencyModal.setAttribute('aria-hidden', 'false'); });
+    if (emergencyClose && emergencyModal) emergencyClose.addEventListener('click', () => { emergencyModal.classList.remove('open'); emergencyModal.setAttribute('aria-hidden', 'true'); });
+    if (emergencyModal) emergencyModal.addEventListener('click', (event) => { if (event.target === emergencyModal) { emergencyModal.classList.remove('open'); emergencyModal.setAttribute('aria-hidden', 'true'); } });
 
     app.addEventListener('click', (event) => {
       const resetChecksBtn = event.target.closest('[data-reset-checks]');
@@ -732,6 +1100,14 @@
       const resetQuizBtn = event.target.closest('[data-reset-quiz]');
       if (resetQuizBtn) {
         resetQuizSession(true);
+        return;
+      }
+
+      const compareResetBtn = event.target.closest('[data-compare-reset]');
+      if (compareResetBtn) {
+        compareState[currentPet] = ['', '', ''];
+        renderBreeds();
+        window.requestAnimationFrame(() => scrollToElementTop(document.getElementById('breedCompareTool'), 'smooth', 8));
         return;
       }
 
@@ -838,7 +1214,33 @@
       }
     });
 
+
+
+    app.addEventListener('input', (event) => {
+      const costInput = event.target.closest('[data-cost-key]');
+      if (costInput) {
+        updateCostTotal();
+      }
+    });
+
     app.addEventListener('change', (event) => {
+      const compareSelect = event.target.closest('.compare-select');
+      if (compareSelect) {
+        const index = Number(compareSelect.dataset.compareIndex);
+        compareState[currentPet][index] = compareSelect.value;
+        renderBreeds();
+        window.requestAnimationFrame(() => scrollToElementTop(document.getElementById('breedCompareTool'), 'smooth', 8));
+        return;
+      }
+
+      const matchInput = event.target.closest('[data-match-key]');
+      if (matchInput) {
+        matchAnswers[currentPet][matchInput.dataset.matchKey] = matchInput.value;
+        const resultEl = document.getElementById('matchResult');
+        if (resultEl) resultEl.innerHTML = renderMatchResult();
+        return;
+      }
+
       const quizInput = event.target.closest('.quiz-option-input');
       if (quizInput) {
         const session = ensureQuizSession();
