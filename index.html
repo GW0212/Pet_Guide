@@ -946,6 +946,181 @@
       }
     }
 
+
+    /* ─── FINAL PATCH: centered breed group titles, compact readable cards ─── */
+    .breed-group-head {
+      position:relative !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      min-height:42px;
+      padding:0 112px !important;
+      margin-bottom:12px !important;
+      text-align:center !important;
+    }
+    .breed-list-card h3 {
+      width:100% !important;
+      flex:0 1 auto !important;
+      margin:0 !important;
+      text-align:center !important;
+      line-height:1.34 !important;
+      word-break:keep-all;
+    }
+    .breed-group-toggle {
+      position:absolute !important;
+      top:50% !important;
+      right:0 !important;
+      transform:translateY(-50%) !important;
+      min-width:72px;
+    }
+    .breed-group-toggle:hover,
+    .breed-group-toggle:focus-visible {
+      transform:translateY(calc(-50% - 1px)) !important;
+    }
+    .breed-all-toggle {
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--section-deep);
+      border-radius:999px;
+      padding:11px 14px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 8px 22px rgba(0,0,0,.045);
+    }
+    .breed-all-toggle:hover,
+    .breed-all-toggle:focus-visible {
+      border-color:var(--section-primary);
+      transform:translateY(-1px);
+      outline:none;
+    }
+    .breed-detail-card {
+      scroll-margin-top:calc(var(--header-height, 106px) + var(--section-nav-height, 64px) + 22px) !important;
+    }
+    .breed-detail-grid {
+      align-items:stretch;
+    }
+    .breed-fact {
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      min-height:104px;
+    }
+    .breed-fact strong {
+      text-align:center;
+      margin-bottom:8px !important;
+      font-size:.95rem;
+    }
+    .breed-fact span {
+      display:block;
+      text-align:left;
+      line-height:1.68 !important;
+      word-break:keep-all;
+    }
+    .info-grid + .notice,
+    .checklist-grid + .notice,
+    .breed-list + .notice,
+    .quiz-step-shell + .notice,
+    .wrong-note + .notice,
+    .source-box + .feature-grid,
+    .feature-grid + .breed-tools {
+      margin-top:28px !important;
+    }
+    .info-card,
+    .feature-card,
+    .check-card,
+    .notice,
+    .source-box,
+    .breed-list-card,
+    .breed-detail-card {
+      overflow:visible;
+    }
+    .list-item span.txt,
+    .feature-card p,
+    .check-card p,
+    .notice,
+    .source-box,
+    .lead,
+    .breed-group-desc,
+    .breed-fact span {
+      line-height:1.72;
+      word-break:keep-all;
+      overflow-wrap:break-word;
+    }
+
+    @media (max-width:560px) {
+      .section-nav {
+        grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+        gap:7px !important;
+      }
+      .section-nav .tab-btn {
+        min-height:40px !important;
+        padding:7px 4px !important;
+        font-size:.66rem !important;
+        line-height:1.14 !important;
+      }
+      .breed-group-head {
+        min-height:38px;
+        padding:0 78px !important;
+        margin-bottom:10px !important;
+      }
+      .breed-list-card h3 {
+        font-size:.98rem !important;
+        line-height:1.34 !important;
+      }
+      .breed-group-toggle {
+        min-width:62px;
+        padding:7px 9px !important;
+        font-size:.72rem !important;
+      }
+      .breed-tools {
+        display:grid !important;
+        grid-template-columns:1fr 1fr;
+        gap:8px !important;
+      }
+      .breed-tools input {
+        grid-column:1 / -1;
+      }
+      .breed-all-toggle {
+        width:100%;
+        padding:10px 8px;
+        font-size:.8rem;
+      }
+      .breed-detail-grid {
+        grid-template-columns:1fr !important;
+      }
+      .breed-fact {
+        min-height:auto;
+        padding:12px !important;
+      }
+      .breed-fact strong {
+        text-align:left;
+        font-size:.86rem;
+        margin-bottom:5px !important;
+      }
+      .breed-fact span {
+        font-size:.8rem !important;
+        line-height:1.58 !important;
+      }
+      .feature-card,
+      .info-card,
+      .check-card,
+      .notice,
+      .source-box,
+      .breed-list-card,
+      .breed-detail-card {
+        box-shadow:0 8px 22px rgba(0,0,0,.045) !important;
+      }
+      .info-grid + .notice,
+      .checklist-grid + .notice,
+      .breed-list + .notice,
+      .quiz-step-shell + .notice,
+      .wrong-note + .notice,
+      .source-box + .feature-grid,
+      .feature-grid + .breed-tools {
+        margin-top:22px !important;
+      }
+    }
+
   </style>
 </head>
 <body class="dog-mode">

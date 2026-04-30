@@ -142,6 +142,27 @@
     return result;
   }
 
+
+  function getBreedLifestyleNote(groupName, name) {
+    if (currentPet === 'dog') {
+      if (/조렵|회수|스포츠/.test(groupName)) return '냄새 탐색, 회수 놀이, 물놀이처럼 목적이 있는 활동을 넣어야 지루함과 문제 행동을 줄이기 쉽습니다.';
+      if (/목양|허딩/.test(groupName)) return '움직임을 통제하려는 본능이 강할 수 있어 산책뿐 아니라 두뇌 과제와 규칙 훈련이 중요합니다.';
+      if (/하운드|수렵/.test(groupName)) return '후각이나 시각 자극을 따라가려는 성향이 있어 리드줄 관리와 리콜 훈련을 초반부터 잡는 편이 안전합니다.';
+      if (/테리어/.test(groupName)) return '활동성과 집요함이 강한 편이라 짧고 명확한 훈련, 씹기 장난감, 에너지 발산 루틴이 잘 맞습니다.';
+      if (/토이|반려/.test(groupName)) return '체구는 작아도 치아, 슬개골, 체중 변화에 민감할 수 있어 생활 공간과 놀이 강도를 섬세하게 조절해야 합니다.';
+      if (/워킹|사역|작업/.test(groupName)) return '체격과 힘이 큰 경우가 많아 충분한 운동, 명확한 규칙, 안전한 핸들링이 함께 필요합니다.';
+      if (/비사냥|논스포팅/.test(groupName)) return '품종별 체형과 목적 차이가 커서 외형보다 호흡, 피부, 활동량, 체중 관리 포인트를 먼저 확인하는 것이 좋습니다.';
+      return '품종의 평균 성향보다 실제 개체의 에너지, 사회화 경험, 건강 상태를 기준으로 생활 루틴을 맞추는 것이 중요합니다.';
+    }
+    if (/메인쿤|노르웨이|랙돌|라가머핀/.test(name)) return '대형묘 또는 장모묘 성향이 강한 경우 성장기 영양, 관절 부담, 털 엉킴 관리까지 함께 봐야 합니다.';
+    if (/스핑크스|피터볼드|밤비노|돈스코이/.test(name)) return '피모가 적은 품종은 체온 유지, 피부 유분, 햇빛 노출, 목욕 주기를 별도로 관리해야 합니다.';
+    if (/렉스|라펌/.test(name)) return '특수 피모 품종은 털 빠짐이 적어 보여도 피부와 피모 상태를 정기적으로 확인하는 것이 좋습니다.';
+    if (/스코티시|먼치킨|킬트|하이랜더/.test(name)) return '귀, 다리, 체형 특징이 강한 품종은 관절과 움직임 이상을 조기에 살피는 것이 중요합니다.';
+    if (/뱅갈|사바나|토이거|아비시니안|오시캣/.test(name)) return '활동성과 탐색 욕구가 큰 편이라 캣타워, 사냥놀이, 창가 관찰 같은 환경 자극을 충분히 제공해야 합니다.';
+    if (/페르시안|히말라얀|엑조틱/.test(name)) return '짧은 주둥이와 장모 특성이 있는 경우 눈물, 호흡, 털 엉킴, 더위 민감도를 함께 관리하는 것이 좋습니다.';
+    return '품종명보다 실제 성격, 활동량, 피모 상태, 병력, 나이를 기준으로 화장실·놀이·식이 루틴을 조정해야 합니다.';
+  }
+
   function breedDetailCard(item) {
     const breed = item.breed;
     const groupName = typeof breed === 'string' ? item.groupName : (breed.group || item.groupName);
@@ -164,11 +185,11 @@
         '<button class="detail-close" type="button" data-close-breed="true" aria-label="품종 정보 닫기">×</button>' +
         '<h4>' + escapeHTML(name) + '</h4>' +
         '<div class="breed-detail-grid">' +
-          '<div class="breed-fact"><strong>분류</strong><span>' + escapeHTML(groupName) + '</span></div>' +
+          '<div class="breed-fact"><strong>생활 적합도</strong><span>' + escapeHTML(getBreedLifestyleNote(groupName, name)) + '</span></div>' +
           '<div class="breed-fact"><strong>핵심 특징</strong><span>' + escapeHTML(profile) + '</span></div>' +
           '<div class="breed-fact"><strong>돌봄 포인트</strong><span>' + escapeHTML(care) + '</span></div>' +
           '<div class="breed-fact"><strong>건강 주의</strong><span>' + escapeHTML(health) + '</span></div>' +
-          '<div class="breed-fact"><strong>참고</strong><span>' + escapeHTML(note) + '</span></div>' +
+          '<div class="breed-fact"><strong>보호자 체크</strong><span>' + escapeHTML(note) + '</span></div>' +
         '</div>' +
       '</article>';
   }
@@ -248,6 +269,8 @@
       )).join('') + '</div>' +
       '<div class="breed-tools">' +
         '<input id="breedSearch" type="search" inputmode="search" autocomplete="off" placeholder="품종명 검색 · 예: 푸들, 진돗개, 샴" />' +
+        '<button class="breed-all-toggle" type="button" data-breed-all="open">전체 펼치기</button>' +
+        '<button class="breed-all-toggle" type="button" data-breed-all="close">전체 접기</button>' +
       '</div>' +
       '<div class="breed-list" id="breedList"></div>' +
       '<div class="notice"><strong>품종 정보 읽는 법:</strong> 품종은 성향의 출발점일 뿐 정답지는 아닙니다. 같은 품종이어도 부모견/부모묘, 초기 사회화, 건강 상태, 생활 환경에 따라 성격과 관리 난이도는 크게 달라집니다.</div>';
@@ -597,7 +620,7 @@
 
   function renderCards(section) {
     app.innerHTML = '' +
-      sectionHeader(section.icon, section.kicker, section.title, '') +
+      sectionHeader(section.icon, section.kicker, section.title, section.lead || '') +
       '<div class="info-grid">' + section.cards.map((card) => (
         '<article class="info-card">' +
           '<div class="card-head">' +
@@ -757,6 +780,22 @@
       const downloadResultBtn = event.target.closest('[data-download-result]');
       if (downloadResultBtn) {
         downloadQuizResultPNG();
+        return;
+      }
+
+
+      const breedAllToggle = event.target.closest('[data-breed-all]');
+      if (breedAllToggle) {
+        const action = breedAllToggle.dataset.breedAll;
+        const store = expandedBreedGroups[currentPet];
+        store.clear();
+        if (action === 'open') {
+          getFilteredBreedGroups().forEach((group) => store.add(currentPet + '-group-' + group.groupIndex));
+        }
+        if (action === 'close') openedBreedKey = '';
+        updateBreedList();
+        const list = document.getElementById('breedList');
+        scrollToElementTop(list, 'smooth', 8);
         return;
       }
 
