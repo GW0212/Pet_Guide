@@ -82,15 +82,16 @@
 
   function cardsMarkup(section) {
     return '<div class="info-grid">' + section.cards.map((card) => (
-      '<article class="info-card">' +
+      '<article class="info-card collapsible-box is-collapsed">' +
         '<div class="card-head">' +
           '<div class="card-icon">' + escapeHTML(card.icon) + '</div>' +
           '<div>' +
             '<div class="card-title">' + escapeHTML(card.title) + '</div>' +
             '<div class="card-subtitle">' + escapeHTML(card.subtitle || '') + '</div>' +
           '</div>' +
+          '<button class="collapse-toggle" type="button" data-collapse-toggle="true" aria-expanded="false">펼치기</button>' +
         '</div>' +
-        '<div class="item-list">' + card.items.map((item) => (
+        '<div class="item-list collapsible-content">' + card.items.map((item) => (
           '<div class="list-item"><span class="dot">•</span><div><strong>' + escapeHTML(item[0]) + '</strong><span class="txt">' + escapeHTML(item[1]) + '</span></div></div>'
         )).join('') + '</div>' +
       '</article>'
@@ -370,11 +371,12 @@
       '<div class="source-box"><strong>사용 방법:</strong> 품종 버튼을 누르면 상세 정보 카드가 펼쳐집니다. 같은 버튼을 다시 누르거나 카드 우측 상단 × 버튼을 누르면 닫힙니다.</div>' +
       comparePanelMarkup() +
       '<div class="feature-grid">' + pet.featured.map((breed) => (
-        '<article class="feature-card">' +
+        '<article class="feature-card collapsible-box is-collapsed">' +
           '<div class="feature-emoji">' + escapeHTML(breed.emoji) + '</div>' +
           '<h3>' + escapeHTML(breed.name) + '</h3>' +
           '<span class="tag">' + escapeHTML(breed.tag) + '</span>' +
-          '<p>' + escapeHTML(breed.text) + '</p>' +
+          '<button class="collapse-toggle" type="button" data-collapse-toggle="true" aria-expanded="false">펼치기</button>' +
+          '<p class="collapsible-content">' + escapeHTML(breed.text) + '</p>' +
         '</article>'
       )).join('') + '</div>' +
       '<div class="breed-tools">' +
@@ -710,15 +712,16 @@
       '</div>' +
       costCalculatorMarkup() +
       '<div class="checklist-grid">' + checklist.groups.map((group, groupIndex) => (
-        '<article class="check-card">' +
+        '<article class="check-card collapsible-box is-collapsed">' +
           '<div class="card-head">' +
             '<div class="card-icon">' + escapeHTML(group.icon) + '</div>' +
             '<div>' +
               '<h3>' + escapeHTML(group.title) + '</h3>' +
               '<p>' + escapeHTML(group.desc) + '</p>' +
             '</div>' +
+            '<button class="collapse-toggle" type="button" data-collapse-toggle="true" aria-expanded="false">펼치기</button>' +
           '</div>' +
-          '<div class="check-items">' + group.items.map((item, itemIndex) => {
+          '<div class="check-items collapsible-content">' + group.items.map((item, itemIndex) => {
             const key = currentPet + '-' + groupIndex + '-' + itemIndex;
             const checked = store[key] ? ' checked' : '';
             return '<label class="check-row"><input class="check-input" type="checkbox" data-check-key="' + escapeHTML(key) + '"' + checked + ' /><span>' + escapeHTML(item) + '</span></label>';
@@ -827,11 +830,11 @@
     return '' +
       '<section class="tool-card learning-tool">' +
         '<div class="tool-head"><span>📅</span><div><strong>생애주기 관리</strong><em>나이에 따라 관리 기준이 달라집니다.</em></div></div>' +
-        '<div class="mini-grid">' + lifecycleData[currentPet].map((item) => '<article><strong>' + escapeHTML(item[0]) + '</strong><p>' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
+        '<div class="mini-grid">' + lifecycleData[currentPet].map((item) => '<article class="mini-collapse collapsible-box is-collapsed"><div class="mini-collapse-head"><strong>' + escapeHTML(item[0]) + '</strong><button class="collapse-toggle mini" type="button" data-collapse-toggle="true" aria-expanded="false">펼치기</button></div><p class="collapsible-content">' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
       '</section>' +
       '<section class="tool-card mistakes-tool">' +
         '<div class="tool-head"><span>⚠️</span><div><strong>초보자 실수 모음</strong><em>반려 생활 초반에 가장 많이 놓치는 부분입니다.</em></div></div>' +
-        '<div class="mini-grid">' + mistakeData[currentPet].map((item) => '<article><strong>' + escapeHTML(item[0]) + '</strong><p>' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
+        '<div class="mini-grid">' + mistakeData[currentPet].map((item) => '<article class="mini-collapse collapsible-box is-collapsed"><div class="mini-collapse-head"><strong>' + escapeHTML(item[0]) + '</strong><button class="collapse-toggle mini" type="button" data-collapse-toggle="true" aria-expanded="false">펼치기</button></div><p class="collapsible-content">' + escapeHTML(item[1]) + '</p></article>').join('') + '</div>' +
       '</section>';
   }
 
@@ -1089,6 +1092,19 @@
     if (emergencyModal) emergencyModal.addEventListener('click', (event) => { if (event.target === emergencyModal) { emergencyModal.classList.remove('open'); emergencyModal.setAttribute('aria-hidden', 'true'); } });
 
     app.addEventListener('click', (event) => {
+      const collapseBtn = event.target.closest('[data-collapse-toggle]');
+      if (collapseBtn) {
+        const box = collapseBtn.closest('.collapsible-box');
+        if (box) {
+          const willOpen = box.classList.contains('is-collapsed');
+          box.classList.toggle('is-collapsed', !willOpen);
+          collapseBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+          collapseBtn.textContent = willOpen ? '접기' : '펼치기';
+          if (willOpen) scrollToElementTop(box, 'smooth', 8);
+        }
+        return;
+      }
+
       const resetChecksBtn = event.target.closest('[data-reset-checks]');
       if (resetChecksBtn) {
         saveChecklistStore({});

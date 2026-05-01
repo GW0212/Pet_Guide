@@ -1507,6 +1507,246 @@
         margin-top:18px !important;
       }
     }
+
+    /* ─── MOBILE FINAL PATCH: compact compare/cost + collapsible content boxes ─── */
+    .collapsible-box .collapsible-content {
+      margin-top:12px;
+    }
+    .collapsible-box.is-collapsed .collapsible-content {
+      display:none !important;
+    }
+    .collapse-toggle {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:74px;
+      min-height:34px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      color:var(--section-deep);
+      font-weight:900;
+      font-size:.78rem;
+      cursor:pointer;
+      box-shadow:0 5px 14px rgba(0,0,0,.045);
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+      flex:0 0 auto;
+    }
+    .collapse-toggle:hover {
+      transform:translateY(-1px);
+      border-color:var(--section-primary);
+      background:var(--section-soft);
+    }
+    .collapsible-box:not(.is-collapsed) .collapse-toggle {
+      background:var(--section-primary);
+      border-color:var(--section-primary);
+      color:#fff;
+    }
+    .info-card.collapsible-box .card-head,
+    .check-card.collapsible-box .card-head {
+      margin-bottom:0;
+    }
+    .info-card.collapsible-box:not(.is-collapsed) .card-head,
+    .check-card.collapsible-box:not(.is-collapsed) .card-head {
+      margin-bottom:14px;
+    }
+    .feature-card.collapsible-box .collapse-toggle {
+      margin-top:4px;
+    }
+    .feature-card.collapsible-box .collapsible-content {
+      margin-top:10px;
+    }
+    .mini-collapse-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .mini-collapse .collapsible-content {
+      margin-top:10px;
+      text-align:center;
+    }
+    .mini-collapse .collapse-toggle.mini {
+      min-width:64px;
+      min-height:30px;
+      font-size:.72rem;
+      padding:5px 10px;
+    }
+
+    @media (max-width:560px) {
+      .compare-tool {
+        padding:15px 12px;
+        border-radius:22px;
+      }
+      .compare-tool .tool-head {
+        margin-bottom:12px;
+      }
+      .compare-tool .tool-head em {
+        max-width:25em;
+        margin-left:auto;
+        margin-right:auto;
+      }
+      .compare-selects {
+        grid-template-columns:1fr !important;
+        gap:9px !important;
+        padding:10px;
+        border-radius:18px;
+        background:linear-gradient(135deg,var(--section-soft),#fff);
+        border:1px solid var(--line);
+      }
+      .compare-select-label {
+        display:grid !important;
+        grid-template-columns:76px minmax(0,1fr);
+        align-items:center;
+        gap:8px !important;
+        padding:8px 9px;
+        border:1px solid var(--line);
+        border-radius:15px;
+        background:#fff;
+        text-align:left !important;
+      }
+      .compare-select-label > span {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:34px;
+        border-radius:999px;
+        background:var(--section-soft);
+        color:var(--section-deep);
+        font-size:.76rem;
+        line-height:1.2;
+        white-space:nowrap;
+      }
+      .compare-select-label select {
+        min-height:38px !important;
+        padding:7px 28px 7px 8px !important;
+        border:0 !important;
+        border-radius:12px !important;
+        background:#fff !important;
+        font-size:.84rem !important;
+        line-height:1.25 !important;
+        box-shadow:none !important;
+      }
+      .compare-actions {
+        margin-top:9px !important;
+      }
+      .compare-reset {
+        width:100%;
+        max-width:180px;
+        min-height:40px;
+        padding:8px 13px !important;
+        font-size:.8rem !important;
+      }
+      .compare-result {
+        margin-top:12px !important;
+      }
+      .compare-card {
+        padding:12px 10px !important;
+      }
+
+      .cost-tool {
+        padding:15px 12px;
+        border-radius:22px;
+      }
+      .cost-tool .tool-head {
+        margin-bottom:12px;
+      }
+      .cost-grid {
+        grid-template-columns:1fr !important;
+        gap:9px !important;
+      }
+      .cost-field {
+        display:grid !important;
+        grid-template-columns:94px minmax(0,1fr);
+        align-items:center;
+        gap:9px !important;
+        padding:9px 10px;
+        border:1px solid var(--line);
+        border-radius:16px;
+        background:var(--section-soft);
+        text-align:left !important;
+        font-size:.82rem !important;
+      }
+      .cost-field span {
+        color:var(--section-deep);
+        line-height:1.25;
+      }
+      .cost-field input {
+        min-height:38px !important;
+        padding:8px 10px !important;
+        border-radius:12px !important;
+        background:#fff !important;
+        text-align:right;
+        font-size:.9rem !important;
+      }
+      .cost-total {
+        margin-top:11px !important;
+        padding:13px 12px !important;
+        border-radius:17px !important;
+        flex-direction:column;
+        gap:4px !important;
+      }
+
+      .info-card.collapsible-box,
+      .check-card.collapsible-box,
+      .feature-card.collapsible-box,
+      .mini-collapse {
+        padding:13px 12px !important;
+      }
+      .info-card.collapsible-box .card-head,
+      .check-card.collapsible-box .card-head {
+        display:grid;
+        grid-template-columns:42px minmax(0,1fr) auto;
+        align-items:center;
+        gap:9px;
+        text-align:left;
+      }
+      .info-card.collapsible-box .card-icon,
+      .check-card.collapsible-box .card-icon {
+        width:42px;
+        height:42px;
+        border-radius:14px;
+      }
+      .info-card.collapsible-box .card-title,
+      .check-card.collapsible-box h3 {
+        text-align:left;
+        font-size:.94rem;
+        line-height:1.28;
+      }
+      .info-card.collapsible-box .card-subtitle,
+      .check-card.collapsible-box p {
+        text-align:left;
+        font-size:.72rem;
+        line-height:1.35;
+        margin-top:2px;
+      }
+      .collapse-toggle {
+        min-width:58px;
+        min-height:32px;
+        padding:5px 9px;
+        font-size:.72rem;
+      }
+      .feature-card.collapsible-box {
+        gap:4px;
+      }
+      .feature-card.collapsible-box .feature-emoji {
+        font-size:1.6rem;
+      }
+      .feature-card.collapsible-box h3 {
+        font-size:.9rem;
+      }
+      .mini-collapse-head strong {
+        text-align:left !important;
+        margin:0 !important;
+        font-size:.88rem;
+      }
+      .mini-collapse .collapsible-content {
+        text-align:left;
+        font-size:.8rem;
+        line-height:1.55;
+      }
+    }
+
   </style>
 </head>
 <body class="dog-mode">
