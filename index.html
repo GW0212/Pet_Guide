@@ -1839,6 +1839,394 @@
       align-self:flex-start !important;
     }
 
+
+    /* ─── MOBILE UX OPTIMIZATION PATCH ─── */
+    html, body { overflow-x:hidden; }
+
+    @media (max-width:768px) {
+      :root { --radius:20px; }
+
+      body {
+        font-size:14px;
+        background:linear-gradient(180deg, var(--section-soft) 0%, var(--paper) 22%, #fffaf3 100%);
+      }
+
+      header {
+        min-height:auto !important;
+        padding:12px 14px !important;
+        gap:10px !important;
+      }
+
+      button.logo {
+        padding:8px 14px 8px 10px !important;
+        font-size:1.08rem !important;
+        max-width:100%;
+      }
+
+      .logo img {
+        width:30px !important;
+        height:30px !important;
+        border-radius:10px !important;
+      }
+
+      nav[aria-label="반려동물 선택"] {
+        width:100%;
+        display:grid !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        gap:8px !important;
+      }
+
+      .nav-btn {
+        width:100%;
+        min-height:44px;
+        padding:11px 12px !important;
+        font-size:.92rem !important;
+      }
+
+      .hero {
+        padding:28px 14px 26px !important;
+      }
+
+      .hero::before { opacity:.25; }
+
+      .hero-badge {
+        margin-bottom:10px !important;
+        padding:7px 12px !important;
+        font-size:.76rem !important;
+      }
+
+      .hero-emoji {
+        font-size:3rem !important;
+      }
+
+      h1 {
+        font-size:1.8rem !important;
+        margin-top:10px !important;
+        line-height:1.18 !important;
+      }
+
+      .hero-desc {
+        font-size:.88rem !important;
+        line-height:1.58 !important;
+        margin-top:10px !important;
+      }
+
+      .summary-strip {
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:8px !important;
+        margin-top:18px !important;
+      }
+
+      .summary-pill {
+        padding:10px 8px !important;
+        border-radius:14px !important;
+      }
+
+      .summary-pill strong { font-size:.76rem !important; }
+      .summary-pill span { font-size:.68rem !important; }
+
+      .section-nav {
+        top:var(--header-height, 104px) !important;
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        justify-content:flex-start !important;
+        align-items:stretch;
+        gap:8px !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        padding:10px 12px !important;
+        scrollbar-width:none;
+        scroll-snap-type:x proximity;
+        overscroll-behavior-x:contain;
+        box-shadow:0 6px 16px rgba(0,0,0,.04);
+      }
+
+      .section-nav::-webkit-scrollbar { display:none; }
+
+      .section-nav .tab-btn {
+        flex:0 0 auto !important;
+        width:auto !important;
+        min-width:max-content;
+        min-height:40px !important;
+        padding:10px 12px !important;
+        border-radius:999px !important;
+        font-size:.78rem !important;
+        line-height:1.2 !important;
+        white-space:nowrap !important;
+        scroll-snap-align:start;
+      }
+
+      main {
+        max-width:100% !important;
+        padding:24px 12px 84px !important;
+      }
+
+      .section-header {
+        margin-bottom:18px !important;
+        gap:8px !important;
+      }
+
+      .section-icon {
+        width:54px !important;
+        height:54px !important;
+        border-radius:18px !important;
+        font-size:1.45rem !important;
+      }
+
+      h2 {
+        font-size:1.42rem !important;
+        line-height:1.3 !important;
+      }
+
+      .lead,
+      .source-box,
+      .notice,
+      .loading-card {
+        font-size:.84rem !important;
+        line-height:1.58 !important;
+      }
+
+      .feature-grid,
+      .info-grid,
+      .checklist-grid,
+      .mini-grid,
+      .food-results,
+      .match-options,
+      .cost-grid,
+      .quiz-options,
+      .breed-detail-grid,
+      .breed-detail-grid-compact {
+        grid-template-columns:1fr !important;
+        gap:10px !important;
+      }
+
+      .feature-card,
+      .info-card,
+      .check-card,
+      .breed-list-card,
+      .breed-detail-card,
+      .tool-card,
+      .quiz-toolbar,
+      .quiz-step-shell,
+      .quiz-card,
+      .wrong-note,
+      .quiz-result,
+      .source-box,
+      .notice,
+      .loading-card,
+      .check-progress,
+      .match-field,
+      .food-result-card,
+      .mini-grid article {
+        border-radius:18px !important;
+        padding:14px 12px !important;
+        box-shadow:0 8px 20px rgba(0,0,0,.045) !important;
+      }
+
+      .card-head,
+      .tool-head {
+        text-align:left !important;
+      }
+
+      .tool-head {
+        justify-content:flex-start !important;
+        align-items:flex-start !important;
+      }
+
+      .tool-head > span,
+      .card-icon {
+        width:42px !important;
+        height:42px !important;
+        border-radius:14px !important;
+        font-size:1.15rem !important;
+      }
+
+      .card-title,
+      .tool-head strong,
+      .check-card h3,
+      .feature-card h3 {
+        font-size:.96rem !important;
+        line-height:1.35 !important;
+      }
+
+      .card-subtitle,
+      .tool-head em,
+      .check-card p,
+      .feature-card p,
+      .breed-group-desc,
+      .food-result-card p,
+      .mini-grid p,
+      .match-result p,
+      .list-item span.txt,
+      .breed-fact span {
+        font-size:.8rem !important;
+        line-height:1.55 !important;
+      }
+
+      .list-item,
+      .check-row,
+      .quiz-option,
+      .match-options label,
+      .food-result-card,
+      .mini-grid article,
+      .breed-fact {
+        border-radius:14px !important;
+      }
+
+      .collapse-toggle,
+      .breed-group-toggle,
+      .breed-all-toggle,
+      .reset-checks,
+      .reset-quiz,
+      .submit-quiz,
+      .download-result,
+      .quiz-nav-btn {
+        min-height:40px !important;
+        padding:9px 12px !important;
+        font-size:.8rem !important;
+      }
+
+      .breed-tools {
+        display:grid !important;
+        grid-template-columns:1fr 1fr !important;
+        gap:8px !important;
+        width:100%;
+        max-width:100% !important;
+        margin:18px auto 14px !important;
+      }
+
+      .breed-tools input,
+      .tool-input,
+      .cost-field input {
+        font-size:16px !important;
+        min-height:44px !important;
+      }
+
+      .breed-tools input {
+        grid-column:1 / -1;
+        width:100% !important;
+        padding:12px 14px !important;
+      }
+
+      .breed-tools .count-pill {
+        grid-column:1 / -1;
+        justify-self:center;
+        min-height:30px;
+        padding:7px 12px !important;
+        font-size:.76rem !important;
+      }
+
+      .breed-list {
+        gap:12px !important;
+      }
+
+      .breed-list-card {
+        flex-basis:100% !important;
+        max-width:100% !important;
+      }
+
+      .breed-group-head {
+        min-height:auto !important;
+        padding:0 74px 0 0 !important;
+        justify-content:flex-start !important;
+        text-align:left !important;
+      }
+
+      .breed-list-card h3 {
+        justify-content:flex-start !important;
+        text-align:left !important;
+        font-size:.98rem !important;
+      }
+
+      .breed-group-count {
+        font-size:.7rem !important;
+        min-width:40px !important;
+      }
+
+      .breed-group-desc,
+      .breed-group-body .chips {
+        text-align:left !important;
+        justify-content:flex-start !important;
+      }
+
+      .chips {
+        gap:6px !important;
+      }
+
+      .chip,
+      .match-breed-chip,
+      .food-risk,
+      .breed-detail-group-badge {
+        font-size:.72rem !important;
+        padding:6px 9px !important;
+      }
+
+      .breed-detail-card h4 {
+        font-size:1.12rem !important;
+        line-height:1.3 !important;
+        margin:0 34px 10px !important;
+      }
+
+      .check-progress {
+        gap:10px !important;
+        text-align:center !important;
+      }
+
+      .check-progress strong {
+        font-size:.92rem !important;
+      }
+
+      .quiz-toolbar {
+        margin-bottom:14px !important;
+        text-align:left !important;
+      }
+
+      .quiz-step-head,
+      .quiz-step-actions {
+        gap:8px !important;
+      }
+
+      .quiz-step-actions {
+        position:sticky;
+        bottom:max(10px, env(safe-area-inset-bottom));
+        background:rgba(255,253,248,.96);
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
+        border:1px solid var(--line);
+        border-radius:18px;
+        padding:8px;
+      }
+
+      .quiz-nav-btn,
+      .submit-quiz {
+        flex:1 1 0;
+      }
+
+      .result-score {
+        width:96px !important;
+        height:96px !important;
+        font-size:2rem !important;
+      }
+
+      .result-summary h3 {
+        font-size:1.1rem !important;
+      }
+
+      .emergency-fab {
+        width:44px !important;
+        height:44px !important;
+        right:12px !important;
+        bottom:calc(max(12px, env(safe-area-inset-bottom)) + 50px) !important;
+      }
+
+      .back-to-top {
+        width:44px !important;
+        height:44px !important;
+        right:12px !important;
+        bottom:max(12px, env(safe-area-inset-bottom)) !important;
+      }
+    }
+
   </style>
 </head>
 <body class="dog-mode">

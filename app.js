@@ -188,6 +188,14 @@
     });
   }
 
+  function scrollActiveTabIntoView() {
+    const activeTab = document.querySelector('.section-nav .tab-btn.active');
+    if (!activeTab || window.innerWidth > 768) return;
+    try {
+      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    } catch (error) {}
+  }
+
   function setActiveButtons() {
     $$('.nav-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.pet === currentPet));
     const quizBtn = $('.tab-btn[data-tab="quiz"]');
@@ -195,6 +203,7 @@
     const matchBtn = $('.tab-btn[data-tab="match"]');
     if (matchBtn) matchBtn.textContent = '🎯 맞춤 추천';
     $$('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === currentTab));
+    window.requestAnimationFrame(scrollActiveTabIntoView);
   }
 
   function renderHero() {
