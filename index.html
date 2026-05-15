@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>펫 가이드</title>
+  <title>펫 가이드 — 강아지·고양이 완벽 백과</title>
+  <meta name="description" content="강아지·고양이 품종, 위험 음식, 건강 관리, 입양 준비 체크리스트를 한 번에 학습하는 실전형 반려동물 백과." />
+  <meta name="theme-color" content="#d86f34" />
   <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <meta property="og:title" content="펫 가이드 — 강아지·고양이 완벽 백과" />
+  <meta property="og:description" content="품종, 위험 음식, 건강 관리, 입양 전 체크리스트를 한 번에." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -1122,7 +1129,7 @@
     }
 
 
-    /* ─── FINAL FEATURE ADDITIONS: compare, recommendation, cost, emergency, food search ─── */
+    /* ─── FINAL FEATURE ADDITIONS: recommendation, cost, emergency, food search ─── */
     .tool-card {
       background:#fff;
       border:1px solid var(--line);
@@ -1167,28 +1174,11 @@
       font-size:.88rem;
       line-height:1.55;
     }
-    .compare-selects, .cost-grid, .match-options {
+    .cost-grid, .match-options {
       display:grid;
       gap:12px;
     }
-    .compare-selects { grid-template-columns:repeat(3,minmax(0,1fr)); }
-    .compare-actions {
-      display:flex;
-      justify-content:center;
-      margin-top:12px;
-    }
-    .compare-reset {
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--section-deep);
-      border-radius:999px;
-      padding:10px 18px;
-      font-weight:900;
-      cursor:pointer;
-      box-shadow:0 6px 16px rgba(0,0,0,.04);
-    }
-    .compare-reset:hover { border-color:var(--section-primary); transform:translateY(-1px); }
-    .compare-select-label, .cost-field {
+    .cost-field {
       display:grid;
       gap:7px;
       color:var(--section-deep);
@@ -1197,7 +1187,6 @@
       text-align:center;
     }
     .cost-field { text-align:left; }
-    .compare-select-label select,
     .cost-field input,
     .tool-input {
       width:100%;
@@ -1209,51 +1198,11 @@
       font-weight:800;
       outline:none;
     }
-    .compare-select-label select:focus,
     .cost-field input:focus,
     .tool-input:focus {
       border-color:var(--section-primary);
       box-shadow:0 0 0 4px color-mix(in srgb, var(--section-primary) 14%, transparent);
     }
-    .compare-empty {
-      margin-top:14px;
-      padding:16px;
-      border-radius:18px;
-      background:var(--section-soft);
-      color:var(--muted);
-      text-align:center;
-      line-height:1.65;
-      font-weight:700;
-    }
-    .compare-result { margin-top:16px; }
-    .compare-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-    .compare-card {
-      background:var(--section-soft);
-      border:1px solid rgba(255,255,255,.72);
-      border-radius:18px;
-      padding:16px;
-      min-width:0;
-      text-align:center;
-    }
-    .compare-card h4 {
-      font-family:'Noto Serif KR', serif;
-      color:var(--section-deep);
-      font-size:1.1rem;
-      text-align:center;
-      line-height:1.35;
-      letter-spacing:-.04em;
-      margin-bottom:5px;
-    }
-    .compare-group {
-      margin:0 0 12px;
-      text-align:center;
-      color:var(--section-primary);
-      font-size:.78rem;
-      font-weight:900;
-    }
-    .compare-card dl { margin:0; display:grid; gap:10px; text-align:center; }
-    .compare-card dt { color:var(--section-deep); font-weight:900; font-size:.82rem; text-align:center; }
-    .compare-card dd { margin:4px 0 0; color:var(--muted); line-height:1.62; font-size:.82rem; text-align:center; word-break:keep-all; overflow-wrap:anywhere; }
     .breed-summary {
       margin:0 auto 14px;
       padding:13px 16px;
@@ -1428,7 +1377,7 @@
     .emergency-note { background:#fff0ee; color:#9d281f; border-radius:16px; padding:14px; text-align:center; font-weight:900; line-height:1.6; }
 
     @media (max-width:940px) {
-      .compare-selects, .compare-grid, .cost-grid { grid-template-columns:1fr; }
+      .cost-grid { grid-template-columns:1fr; }
       .food-results, .mini-grid { grid-template-columns:1fr; }
       .match-options { grid-template-columns:1fr; }
     }
@@ -1441,13 +1390,10 @@
       .tool-head strong { font-size:1rem; }
       .tool-head em { font-size:.78rem; line-height:1.5; }
       .breed-summary { text-align:left; font-size:.8rem; line-height:1.55; padding:12px; }
-      .compare-select-label, .cost-field { font-size:.78rem; }
-      .compare-actions { margin-top:10px; }
-      .compare-reset { width:100%; max-width:220px; padding:10px 14px; font-size:.82rem; }
-      .compare-select-label select, .cost-field input, .tool-input { padding:11px; border-radius:14px; font-size:.82rem; }
-      .compare-card, .food-result-card, .mini-grid article { padding:12px; border-radius:14px; }
-      .compare-card h4 { font-size:.98rem; }
-      .compare-card dd, .food-result-card p, .mini-grid p { font-size:.78rem; line-height:1.55; }
+      .cost-field { font-size:.78rem; }
+          .cost-field input, .tool-input { padding:11px; border-radius:14px; font-size:.82rem; }
+      .food-result-card, .mini-grid article { padding:12px; border-radius:14px; }
+        .food-result-card p, .mini-grid p { font-size:.78rem; line-height:1.55; }
       .cost-total { padding:14px; gap:8px; }
       .cost-total strong { font-size:1.25rem; }
       .match-field { padding:13px 10px; border-radius:16px; }
@@ -1458,41 +1404,8 @@
     }
 
 
-    /* ─── FINAL QA PATCH: compare select centering + mobile polish ─── */
-    .compare-select-label select {
-      text-align:center !important;
-      text-align-last:center !important;
-      -moz-text-align-last:center !important;
-      cursor:pointer;
-    }
-    .compare-select-label select option,
-    .compare-select-label option { text-align:center; }
-    .compare-card,
-    .compare-card * {
-      text-align:center;
-    }
+    /* ─── FINAL QA PATCH: mobile polish ─── */
     @media (max-width:560px) {
-      .compare-selects { gap:10px; }
-      .compare-select-label { gap:6px; }
-      .compare-select-label select {
-        min-height:44px;
-        padding:10px 36px 10px 14px;
-        line-height:1.35;
-      }
-      .compare-grid { gap:10px; }
-      .compare-card {
-        padding:14px 12px;
-        border-radius:16px;
-      }
-      .compare-card dl { gap:8px; }
-      .compare-card dt { font-size:.8rem; }
-      .compare-card dd {
-        max-width:31em;
-        margin-left:auto;
-        margin-right:auto;
-        word-break:keep-all;
-        overflow-wrap:anywhere;
-      }
       .food-search-tool .tool-input,
       .cost-field input,
       .tool-input {
@@ -1508,7 +1421,7 @@
       }
     }
 
-    /* ─── MOBILE FINAL PATCH: compact compare/cost + collapsible content boxes ─── */
+    /* ─── MOBILE FINAL PATCH: compact cost + collapsible content boxes ─── */
     .collapsible-box .collapsible-content {
       margin-top:12px;
     }
@@ -1574,76 +1487,7 @@
     }
 
     @media (max-width:560px) {
-      .compare-tool {
-        padding:15px 12px;
-        border-radius:22px;
-      }
-      .compare-tool .tool-head {
-        margin-bottom:12px;
-      }
-      .compare-tool .tool-head em {
-        max-width:25em;
-        margin-left:auto;
-        margin-right:auto;
-      }
-      .compare-selects {
-        grid-template-columns:1fr !important;
-        gap:9px !important;
-        padding:10px;
-        border-radius:18px;
-        background:linear-gradient(135deg,var(--section-soft),#fff);
-        border:1px solid var(--line);
-      }
-      .compare-select-label {
-        display:grid !important;
-        grid-template-columns:76px minmax(0,1fr);
-        align-items:center;
-        gap:8px !important;
-        padding:8px 9px;
-        border:1px solid var(--line);
-        border-radius:15px;
-        background:#fff;
-        text-align:left !important;
-      }
-      .compare-select-label > span {
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        min-height:34px;
-        border-radius:999px;
-        background:var(--section-soft);
-        color:var(--section-deep);
-        font-size:.76rem;
-        line-height:1.2;
-        white-space:nowrap;
-      }
-      .compare-select-label select {
-        min-height:38px !important;
-        padding:7px 28px 7px 8px !important;
-        border:0 !important;
-        border-radius:12px !important;
-        background:#fff !important;
-        font-size:.84rem !important;
-        line-height:1.25 !important;
-        box-shadow:none !important;
-      }
-      .compare-actions {
-        margin-top:9px !important;
-      }
-      .compare-reset {
-        width:100%;
-        max-width:180px;
-        min-height:40px;
-        padding:8px 13px !important;
-        font-size:.8rem !important;
-      }
-      .compare-result {
-        margin-top:12px !important;
-      }
-      .compare-card {
-        padding:12px 10px !important;
-      }
-
+        
       .cost-tool {
         padding:15px 12px;
         border-radius:22px;
@@ -1747,6 +1591,254 @@
       }
     }
 
+
+    /* ─── REQUEST PATCH: cleaner breed groups, centered food hint ─── */
+    .food-empty-message {
+      grid-column:1 / -1;
+      width:100%;
+      margin:0 auto;
+      padding:16px;
+      border-radius:18px;
+      background:var(--section-soft);
+      color:var(--muted);
+      text-align:center !important;
+      line-height:1.65;
+      font-weight:800;
+    }
+    .breed-list {
+      display:grid !important;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px !important;
+      align-items:start;
+    }
+    .breed-list-card {
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      padding:22px !important;
+      border-radius:24px !important;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.92));
+      border:1px solid var(--line);
+    }
+    .breed-list-card h3 {
+      display:flex !important;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-align:center !important;
+      flex-wrap:wrap;
+      font-size:1.12rem;
+    }
+    .breed-group-count {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:44px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:var(--section-soft);
+      color:var(--section-deep);
+      font-style:normal;
+      font-size:.76rem;
+      font-weight:900;
+      line-height:1;
+    }
+    .breed-group-desc {
+      min-height:3.3em;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center !important;
+      margin:0 auto 16px !important;
+      max-width:42em;
+    }
+    .breed-group-body {
+      margin-top:auto;
+    }
+    .breed-group-body .chips {
+      justify-content:center;
+      gap:7px;
+    }
+    .breed-list-card.is-collapsed .breed-group-desc,
+    .breed-list-card.is-collapsed .breed-group-body {
+      display:none !important;
+    }
+    @media (max-width:940px) {
+      .breed-list { grid-template-columns:1fr !important; }
+      .breed-group-desc { min-height:0; }
+    }
+    @media (max-width:560px) {
+      .breed-list-card { padding:16px 13px !important; border-radius:20px !important; }
+      .breed-group-head { align-items:center !important; }
+      .breed-list-card h3 { justify-content:flex-start; text-align:left !important; font-size:.98rem; }
+      .breed-group-desc { display:block; text-align:left !important; margin:8px 0 12px !important; }
+      .breed-group-body .chips { justify-content:flex-start; }
+    }
+
+
+    /* ─── FINAL PATCH: independent breed card heights + compact detail copy ─── */
+    .breed-list {
+      display:flex !important;
+      flex-wrap:wrap;
+      align-items:flex-start !important;
+      align-content:flex-start !important;
+      gap:18px !important;
+    }
+    .breed-list-card {
+      flex:0 0 calc((100% - 18px) / 2) !important;
+      max-width:calc((100% - 18px) / 2) !important;
+      width:auto !important;
+      height:auto !important;
+      min-height:0 !important;
+      align-self:flex-start !important;
+    }
+    .breed-list-card.is-collapsed {
+      height:auto !important;
+      min-height:0 !important;
+      padding-bottom:18px !important;
+    }
+    .breed-group-desc {
+      min-height:0 !important;
+    }
+    .breed-group-body {
+      margin-top:0 !important;
+    }
+    .breed-detail-card {
+      max-width:760px;
+      padding:17px 18px !important;
+    }
+    .breed-summary {
+      margin:0 auto 12px !important;
+      max-width:620px !important;
+      font-size:.86rem !important;
+      line-height:1.55 !important;
+    }
+    .breed-detail-grid-compact {
+      grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+      gap:8px !important;
+    }
+    .breed-detail-grid-compact .breed-fact {
+      padding:10px 12px !important;
+      border-radius:14px !important;
+      line-height:1.45 !important;
+    }
+    .breed-detail-grid-compact .breed-fact strong {
+      margin-bottom:3px !important;
+      font-size:.84rem !important;
+    }
+    .breed-detail-grid-compact .breed-fact span {
+      font-size:.8rem !important;
+      line-height:1.5 !important;
+    }
+    @media (max-width:940px) {
+      .breed-list-card {
+        flex-basis:100% !important;
+        max-width:100% !important;
+      }
+    }
+    @media (max-width:560px) {
+      .breed-detail-grid-compact {
+        grid-template-columns:1fr !important;
+      }
+      .breed-summary {
+        text-align:left !important;
+      }
+    }
+
+
+    /* ─── CLEANUP PATCH: compact tools, group badge, mobile search controls ─── */
+    .breed-detail-group-badge {
+      display:flex;
+      width:max-content;
+      max-width:100%;
+      margin:-4px auto 10px;
+      padding:5px 11px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--section-primary);
+      font-size:.76rem;
+      font-weight:900;
+      line-height:1.2;
+      text-align:center;
+    }
+    .breed-tools {
+      max-width:820px;
+    }
+    .breed-tools .count-pill {
+      min-width:54px;
+      text-align:center;
+    }
+    @media (max-width:560px) {
+      .breed-tools {
+        display:grid !important;
+        grid-template-columns:repeat(2, minmax(0,1fr));
+        gap:9px !important;
+        width:100%;
+        max-width:100%;
+        margin:18px auto 14px !important;
+      }
+      .breed-tools input {
+        grid-column:1 / -1;
+        width:100% !important;
+        min-height:46px;
+      }
+      .breed-tools .count-pill {
+        grid-column:1 / -1;
+        justify-self:center;
+        width:auto;
+        min-height:28px;
+        padding:7px 12px;
+        font-size:.76rem;
+      }
+      .breed-all-toggle {
+        width:100%;
+        min-height:40px;
+        padding:9px 10px !important;
+        font-size:.8rem !important;
+      }
+      .breed-detail-group-badge {
+        margin-top:-2px;
+        font-size:.72rem;
+      }
+    }
+
+
+    /* ─── QA PATCH: independent heights for every collapsible card grid ─── */
+    .feature-grid,
+    .info-grid,
+    .checklist-grid,
+    .mini-grid,
+    .food-results,
+    .cost-grid,
+    .match-options,
+    .summary-strip {
+      align-items:start !important;
+      align-content:start !important;
+    }
+    .feature-grid > *,
+    .info-grid > *,
+    .checklist-grid > *,
+    .mini-grid > *,
+    .food-results > *,
+    .cost-grid > *,
+    .match-options > *,
+    .summary-strip > * {
+      align-self:start !important;
+      height:auto !important;
+      min-height:0 !important;
+    }
+    .feature-card.collapsible-box,
+    .info-card.collapsible-box,
+    .check-card.collapsible-box,
+    .mini-collapse.collapsible-box,
+    .food-result-card,
+    .mini-grid article {
+      height:auto !important;
+      min-height:0 !important;
+      align-self:flex-start !important;
+    }
+
   </style>
 </head>
 <body class="dog-mode">
@@ -1776,7 +1868,7 @@
     <button class="tab-btn" type="button" data-tab="care">💡 돌봄 팁</button>
     <button class="tab-btn" type="button" data-tab="checklist">✅ 입양 전 체크</button>
     <button class="tab-btn" type="button" data-tab="match">🎯 맞춤 추천</button>
-    <button class="tab-btn" type="button" data-tab="quiz">🐶 관련 지식 테스트</button>
+    <button class="tab-btn" type="button" data-tab="quiz">🧠 지식 테스트</button>
     <button class="tab-btn" type="button" data-tab="behavior">📘 행동 언어</button>
   </div>
 
